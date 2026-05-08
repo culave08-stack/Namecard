@@ -1,7 +1,7 @@
 // app/api/scan/route.ts
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClaudeClient } from '@/lib/ai/client';
+import { createVisionClient } from '@/lib/ai/client';
 import { parseScanResponse } from '@/lib/ai/parse';
 
 export const runtime = 'nodejs';
@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<Response> {
     return errorResponse(400, 'invalid_image', 'frontImage is required');
   }
 
-  const client = createClaudeClient();
+  const client = createVisionClient();
 
   let raw: string;
   try {
@@ -35,7 +35,7 @@ export async function POST(request: Request): Promise<Response> {
     });
   } catch (err) {
     if (err instanceof Error && (err.name === 'AbortError' || /timeout/i.test(err.message))) {
-      return errorResponse(504, 'timeout', 'Claude API timed out');
+      return errorResponse(504, 'timeout', 'Gemini API timed out');
     }
     return errorResponse(502, 'ai_failed', err instanceof Error ? err.message : 'Unknown AI error');
   }

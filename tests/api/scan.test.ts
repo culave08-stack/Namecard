@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const { mockScan } = vi.hoisted(() => ({ mockScan: vi.fn() }));
 
 vi.mock('@/lib/ai/client', () => ({
-  createClaudeClient: () => ({ scan: mockScan }),
+  createVisionClient: () => ({ scan: mockScan }),
 }));
 
 import { POST } from '@/app/api/scan/route';
@@ -29,7 +29,7 @@ describe('POST /api/scan', () => {
     expect(json.code).toBe('invalid_image');
   });
 
-  it('returns parsed scan result on Claude success', async () => {
+  it('returns parsed scan result on Gemini success', async () => {
     mockScan.mockResolvedValue(
       JSON.stringify({
         companyName: 'Acme',
@@ -51,7 +51,7 @@ describe('POST /api/scan', () => {
     expect(json.country.code).toBe('KR');
   });
 
-  it('returns 502 ai_failed when Claude returns invalid JSON', async () => {
+  it('returns 502 ai_failed when Gemini returns invalid JSON', async () => {
     mockScan.mockResolvedValue('totally not json');
     const res = await POST(
       makeRequest({ frontImage: 'data:image/jpeg;base64,Zm9v' })
@@ -61,7 +61,7 @@ describe('POST /api/scan', () => {
     expect(json.code).toBe('ai_failed');
   });
 
-  it('returns 504 timeout when Claude throws timeout error', async () => {
+  it('returns 504 timeout when Gemini throws timeout error', async () => {
     mockScan.mockRejectedValue(Object.assign(new Error('timed out'), { name: 'AbortError' }));
     const res = await POST(
       makeRequest({ frontImage: 'data:image/jpeg;base64,Zm9v' })

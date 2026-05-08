@@ -1,52 +1,49 @@
-// lib/ai/client.ts
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI, type Part } from '@google/genai';
+import { SCAN_SYSTEM_PROMPT, SCAN_USER_TEXT } from './prompt';
 
-export interface ClaudeVisionInput {
+export interface VisionInput {
   frontImageBase64: string;
   backImageBase64?: string;
 }
 
-export interface ClaudeVisionClient {
-  scan(input: ClaudeVisionInput): Promise<string>;
+export interface VisionClient {
+  scan(input: VisionInput): Promise<string>;
 }
 
-class AnthropicClaudeVisionClient implements ClaudeVisionClient {
-  private client: Anthropic;
+class GeminiVisionClient implements VisionClient {
+  private client: GoogleGenAI;
   private model: string;
 
   constructor(apiKey: string, model: string) {
-    this.client = new Anthropic({ apiKey });
+    this.client = new GoogleGenAI({ apiKey });
     this.model = model;
   }
 
-  async scan({ frontImageBase64, backImageBase64 }: ClaudeVisionInput): Promise<string> {
-    const { SCAN_SYSTEM_PROMPT, SCAN_USER_TEXT } = await import('./prompt');
-    const content: Anthropic.Messages.ContentBlockParam[] = [
-      {
-        type: 'image',
-        source: { type: 'base64', media_type: 'image/jpeg', data: stripDataUrl(frontImageBase64) },
-      },
+  async scan({ frontImageBase64, backImageBase64 }: VisionInput): Promise<string> {
+    const parts: Part[] = [
+      { inlineData: { mimeType: 'image/jpeg', data: stripDataUrl(frontImageBase64) } },
     ];
     if (backImageBase64) {
-      content.push({
-        type: 'image',
-        source: { type: 'base64', media_type: 'image/jpeg', data: stripDataUrl(backImageBase64) },
+      parts.push({
+        inlineData: { mimeType: 'image/jpeg', data: stripDataUrl(backImageBase64) },
       });
     }
-    content.push({ type: 'text', text: SCAN_USER_TEXT });
+    parts.push({ text: SCAN_USER_TEXT });
 
-    const response = await this.client.messages.create({
+    const response = await this.client.models.generateContent({
       model: this.model,
-      max_tokens: 1024,
-      system: SCAN_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content }],
+      contents: [{ role: 'user', parts }],
+      config: {
+        systemInstruction: SCAN_SYSTEM_PROMPT,
+        responseMimeType: 'application/json',
+      },
     });
 
-    const textBlock = response.content.find((b) => b.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') {
-      throw new Error('Claude response had no text content');
+    const text = response.text;
+    if (!text) {
+      throw new Error('Gemini response had no text content');
     }
-    return textBlock.text;
+    return text;
   }
 }
 
@@ -55,9 +52,9 @@ function stripDataUrl(b64: string): string {
   return idx >= 0 ? b64.slice(idx + 1) : b64;
 }
 
-export function createClaudeClient(): ClaudeVisionClient {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  const model = process.env.ANTHROPIC_MODEL ?? 'claude-opus-4-7';
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set');
-  return new AnthropicClaudeVisionClient(apiKey, model);
+export function createVisionClient(): VisionClient {
+  const apiKey = process.env.GEMINI_API_KEY;
+  const model = process.env.GEMINI_MODEL ?? 'gemini-2.5-flash';
+  if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
+  return new GeminiVisionClient(apiKey, model);
 }
