@@ -1,0 +1,48 @@
+{
+  "home": {
+    "title": "명함 스캐너",
+    "addCard": "+ 명함 추가",
+    "empty": "아직 저장된 명함이 없습니다",
+    "lastSaved": "직전 저장 카드"
+  },
+  "scan": {
+    "step": {
+      "camera": "명함 앞면 촬영",
+      "preview": "확인",
+      "analyzing": "AI가 명함을 분석 중입니다...",
+      "form": "정보 확인"
+    },
+    "addBack": "뒷면 추가 (선택)",
+    "retake": "재촬영",
+    "analyze": "분석 시작",
+    "manualFallback": "수동 입력으로 진행",
+    "save": "저장",
+    "saved": "저장 완료",
+    "permissionDenied": "카메라 권한이 거부되었습니다. 파일 업로드로 진행합니다.",
+    "aiFailed": "AI 분석에 실패했습니다. 수동으로 입력해주세요.",
+    "guideHint": "명함을 가이드 프레임에 맞춰 주세요"
+  },
+  "form": {
+    "companyName": "회사명",
+    "website": "홈페이지",
+    "websiteGuessed": "추정값",
+    "country": "국가",
+    "personName": "담당자명",
+    "position": "직책",
+    "industry": "업종",
+    "interestedService": "관심 서비스",
+    "interestedServiceOther": "기타 서비스명",
+    "note": "노트",
+    "aiBadge": "AI",
+    "required": "필수 항목입니다",
+    "selectService": "서비스를 선택하세요"
+  },
+  "service": {
+    "kinderboard": "킨더보드",
+    "lumitiq": "루미티치",
+    "artbongbong": "아트봉봉",
+    "turuturu": "뚜루뚜루",
+    "aidt": "AIDT",
+    "other": "기타"
+  }
+}
