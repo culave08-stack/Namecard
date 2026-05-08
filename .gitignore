@@ -15,3 +15,7 @@ Thumbs.db
 .idea/
 *.swp
 node_modules
+
+# Next.js / TypeScript build artifacts
+.next/
+tsconfig.tsbuildinfo
