@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { BusinessCard } from '@/types/business-card';
@@ -11,13 +10,6 @@ export interface CardListItemProps {
 
 export function CardListItem({ card }: CardListItemProps) {
   const tService = useTranslations('service');
-  const [thumbUrl, setThumbUrl] = useState<string>('');
-
-  useEffect(() => {
-    const url = URL.createObjectURL(card.frontImage);
-    setThumbUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [card.frontImage]);
 
   const created = new Date(card.createdAt);
   const dateStr = `${created.getFullYear()}-${pad(created.getMonth() + 1)}-${pad(created.getDate())}`;
@@ -27,9 +19,9 @@ export function CardListItem({ card }: CardListItemProps) {
       href={`/cards/${card.id}`}
       className="flex gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
     >
-      {thumbUrl ? (
+      {card.frontImageUrl ? (
         <img
-          src={thumbUrl}
+          src={card.frontImageUrl}
           alt={card.companyName}
           className="h-16 w-24 shrink-0 rounded-md object-cover"
         />

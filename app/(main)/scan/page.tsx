@@ -12,7 +12,7 @@ import { BusinessCardForm, type FormValues } from '@/components/scan/BusinessCar
 import { resizeImage } from '@/lib/image/resize';
 import { scanResultToFormDefaults, type FormDefaults } from '@/lib/ai/parse';
 import type { ScanResultParsed } from '@/lib/ai/schema';
-import { getCardRepository } from '@/lib/db/dexie-repository';
+import { getCardRepository } from '@/lib/db/supabase-repository';
 
 type Step = 'camera' | 'preview' | 'analyzing' | 'form';
 
@@ -146,9 +146,9 @@ export default function ScanPage() {
 
       {state.step === 'preview' && state.front && (
         <div className="flex flex-col gap-3">
-          <ImagePreview blob={state.front} alt="앞면" />
+          <ImagePreview src={state.front} alt="앞면" />
           {state.back ? (
-            <ImagePreview blob={state.back} alt="뒷면" />
+            <ImagePreview src={state.back} alt="뒷면" />
           ) : (
             <CameraCapture
               label={t('addBack')}

@@ -1,8 +1,14 @@
 // lib/db/repository.ts
-import type { BusinessCard } from '@/types/business-card';
+import type { BusinessCard, BusinessCardFields } from '@/types/business-card';
 
-export type NewBusinessCard = Omit<BusinessCard, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdateBusinessCard = Partial<Omit<BusinessCard, 'id' | 'createdAt' | 'updatedAt'>>;
+export interface NewBusinessCard extends BusinessCardFields {
+  frontImage: Blob;
+  backImage?: Blob;
+}
+
+// Image replacement is not part of the edit flow in Phase 2.5.
+// Extend with `frontImage?: Blob` later if we want re-shoot from the detail page.
+export type UpdateBusinessCard = Partial<BusinessCardFields>;
 
 export interface CardRepository {
   save(card: NewBusinessCard): Promise<BusinessCard>;

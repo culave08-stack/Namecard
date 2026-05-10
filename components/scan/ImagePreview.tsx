@@ -3,18 +3,22 @@
 import { useEffect, useState } from 'react';
 
 export interface ImagePreviewProps {
-  blob: Blob;
+  src: Blob | string;
   alt: string;
 }
 
-export function ImagePreview({ blob, alt }: ImagePreviewProps) {
+export function ImagePreview({ src, alt }: ImagePreviewProps) {
   const [url, setUrl] = useState<string>('');
 
   useEffect(() => {
-    const u = URL.createObjectURL(blob);
+    if (typeof src === 'string') {
+      setUrl(src);
+      return;
+    }
+    const u = URL.createObjectURL(src);
     setUrl(u);
     return () => URL.revokeObjectURL(u);
-  }, [blob]);
+  }, [src]);
 
   if (!url) return null;
   return (

@@ -25,12 +25,8 @@ export interface Country {
   code: string;
 }
 
-export interface BusinessCard {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  frontImage: Blob;
-  backImage?: Blob;
+// Fields common to both stored cards and "new card" inputs.
+export interface BusinessCardFields {
   companyName: string;
   website?: string;
   websiteGuessed?: boolean;
@@ -45,6 +41,15 @@ export interface BusinessCard {
   detectedLanguage?: DetectedLanguage;
   aiFilledFields: string[];
   aiConfidence?: Partial<Record<string, Confidence>>;
+}
+
+// What we read back from the repository: image fields are URLs.
+export interface BusinessCard extends BusinessCardFields {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  frontImageUrl: string;
+  backImageUrl?: string;
 }
 
 export type ScanResult = {

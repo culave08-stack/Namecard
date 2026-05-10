@@ -9,8 +9,4 @@ describe('sanity', () => {
   it('jsdom is available', () => {
     expect(typeof document).toBe('object');
   });
-
-  it('fake-indexeddb is available', () => {
-    expect(typeof indexedDB).toBe('object');
-  });
 });

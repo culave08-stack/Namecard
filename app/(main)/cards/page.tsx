@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { CardListItem } from '@/components/cards/CardListItem';
-import { getCardRepository } from '@/lib/db/dexie-repository';
+import { getCardRepository } from '@/lib/db/supabase-repository';
 import type { BusinessCard, InterestedService } from '@/types/business-card';
 import { INTERESTED_SERVICES } from '@/types/business-card';
 

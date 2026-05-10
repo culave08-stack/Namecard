@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ImagePreview } from '@/components/scan/ImagePreview';
-import { getCardRepository } from '@/lib/db/dexie-repository';
+import { getCardRepository } from '@/lib/db/supabase-repository';
 import type { BusinessCard } from '@/types/business-card';
 
 export function LastCardPreview() {
@@ -29,7 +29,7 @@ export function LastCardPreview() {
       <p className="text-xs text-muted-foreground">{t('lastSaved')}</p>
       <p className="font-medium">{card.companyName}</p>
       <p className="text-sm text-muted-foreground">{card.personName}</p>
-      <ImagePreview blob={card.frontImage} alt={card.companyName} />
+      <ImagePreview src={card.frontImageUrl} alt={card.companyName} />
     </Link>
   );
 }

@@ -11,7 +11,7 @@ import {
   BusinessCardForm,
   type FormValues,
 } from '@/components/scan/BusinessCardForm';
-import { getCardRepository } from '@/lib/db/dexie-repository';
+import { getCardRepository } from '@/lib/db/supabase-repository';
 import type { BusinessCard } from '@/types/business-card';
 
 export default function CardDetailPage() {
@@ -105,11 +105,11 @@ export default function CardDetailPage() {
 
       <div className="flex flex-col gap-2">
         <p className="text-xs font-medium text-muted-foreground">{t('frontImage')}</p>
-        <ImagePreview blob={card.frontImage} alt={card.companyName} />
-        {card.backImage && (
+        <ImagePreview src={card.frontImageUrl} alt={card.companyName} />
+        {card.backImageUrl && (
           <>
             <p className="text-xs font-medium text-muted-foreground">{t('backImage')}</p>
-            <ImagePreview blob={card.backImage} alt={`${card.companyName} (back)`} />
+            <ImagePreview src={card.backImageUrl} alt={`${card.companyName} (back)`} />
           </>
         )}
       </div>

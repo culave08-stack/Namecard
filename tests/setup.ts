@@ -1,6 +1,5 @@
 // tests/setup.ts
 import '@testing-library/jest-dom/vitest';
-import 'fake-indexeddb/auto';
 
 // jsdom does not implement HTMLCanvasElement.getContext('2d').
 // Provide a minimal stub so canvas-based utilities work in tests.
