@@ -43,29 +43,50 @@ export type FormDefaults = Pick<
   | 'aiConfidence'
 >;
 
+// Normalizes a possibly-string value: blanks, "..." placeholders, and the
+// literal "null"/"undefined" become undefined. Otherwise returns the trimmed
+// string. Non-strings pass through unchanged.
+function cleanString(v: unknown): string | undefined {
+  if (typeof v !== 'string') return undefined;
+  const trimmed = v.trim();
+  if (!trimmed) return undefined;
+  if (/^\.{2,}$/.test(trimmed)) return undefined;
+  if (trimmed.toLowerCase() === 'null' || trimmed.toLowerCase() === 'undefined') return undefined;
+  return trimmed;
+}
+
+function cleanCountry(c: ScanResultParsed['country']) {
+  if (!c) return undefined;
+  const name = cleanString(c.name);
+  const code = cleanString(c.code);
+  if (!name || !code) return undefined;
+  return { name, code: code.toUpperCase() };
+}
+
 export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults {
+  const companyName = cleanString(parsed.companyName);
+  const website = cleanString(parsed.website);
+  const country = cleanCountry(parsed.country);
+  const personName = cleanString(parsed.personName);
+  const position = cleanString(parsed.position);
+  const industry = cleanString(parsed.industry);
+
   const aiFilledFields: string[] = [];
-  const fieldMap: Array<[keyof ScanResultParsed, string]> = [
-    ['companyName', 'companyName'],
-    ['website', 'website'],
-    ['country', 'country'],
-    ['personName', 'personName'],
-    ['position', 'position'],
-    ['industry', 'industry'],
-  ];
-  for (const [src, dst] of fieldMap) {
-    if (parsed[src] !== null && parsed[src] !== undefined) {
-      aiFilledFields.push(dst);
-    }
-  }
+  if (companyName) aiFilledFields.push('companyName');
+  if (website) aiFilledFields.push('website');
+  if (country) aiFilledFields.push('country');
+  if (personName) aiFilledFields.push('personName');
+  if (position) aiFilledFields.push('position');
+  if (industry) aiFilledFields.push('industry');
+
   return {
-    companyName: parsed.companyName ?? '',
-    website: parsed.website ?? undefined,
-    websiteGuessed: parsed.websiteGuessed,
-    country: parsed.country ?? undefined,
-    personName: parsed.personName ?? '',
-    position: parsed.position ?? undefined,
-    industry: parsed.industry ?? undefined,
+    companyName: companyName ?? '',
+    website,
+    websiteGuessed: parsed.websiteGuessed && Boolean(website),
+    country,
+    personName: personName ?? '',
+    position,
+    industry,
     detectedLanguage: parsed.detectedLanguage ?? undefined,
     aiFilledFields,
     aiConfidence: parsed.confidence as BusinessCard['aiConfidence'],

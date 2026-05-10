@@ -41,10 +41,13 @@ export async function POST(request: Request): Promise<Response> {
     return errorResponse(502, 'ai_failed', message);
   }
 
+  console.log('[/api/scan] raw Gemini response:', raw.slice(0, 1000));
+
   try {
     const result = parseScanResponse(raw);
     return NextResponse.json(result);
   } catch (err) {
+    console.error('[/api/scan] parse failed. raw:', raw.slice(0, 500));
     return errorResponse(
       502,
       'ai_failed',
