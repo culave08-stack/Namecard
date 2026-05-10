@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
@@ -74,7 +74,6 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
   }), [defaults]);
 
   const {
-    register,
     handleSubmit,
     control,
     watch,
@@ -105,7 +104,7 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
         showAi={showAi('companyName')}
         error={errors.companyName ? t('required') : undefined}
       >
-        <Input {...register('companyName')} className={lowClass('companyName')} />
+        <ControlledInput control={control} name="companyName" className={lowClass('companyName')} />
       </Field>
 
       <Field
@@ -117,13 +116,13 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
             : undefined
         }
       >
-        <Input type="url" {...register('website')} className={lowClass('website')} />
+        <ControlledInput control={control} name="website" type="url" className={lowClass('website')} />
       </Field>
 
       <Field label={t('country')} showAi={showAi('country')}>
         <div className="flex gap-2">
-          <Input {...register('countryName')} placeholder="국가명" />
-          <Input {...register('countryCode')} placeholder="ISO" maxLength={2} className="w-20" />
+          <ControlledInput control={control} name="countryName" placeholder="국가명" className="flex-1" />
+          <ControlledInput control={control} name="countryCode" placeholder="ISO" maxLength={2} className="w-20" />
         </div>
       </Field>
 
@@ -132,15 +131,15 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
         showAi={showAi('personName')}
         error={errors.personName ? t('required') : undefined}
       >
-        <Input {...register('personName')} className={lowClass('personName')} />
+        <ControlledInput control={control} name="personName" className={lowClass('personName')} />
       </Field>
 
       <Field label={t('position')} showAi={showAi('position')}>
-        <Input {...register('position')} className={lowClass('position')} />
+        <ControlledInput control={control} name="position" className={lowClass('position')} />
       </Field>
 
       <Field label={t('industry')} showAi={showAi('industry')}>
-        <Input {...register('industry')} className={lowClass('industry')} />
+        <ControlledInput control={control} name="industry" className={lowClass('industry')} />
       </Field>
 
       <Field
@@ -169,18 +168,60 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
 
       {interestedService === 'other' && (
         <Field label={t('interestedServiceOther')}>
-          <Input {...register('interestedServiceOther')} />
+          <ControlledInput control={control} name="interestedServiceOther" />
         </Field>
       )}
 
       <Field label={t('note')}>
-        <Textarea rows={3} {...register('note')} />
+        <Controller
+          control={control}
+          name="note"
+          render={({ field }) => (
+            <Textarea
+              rows={3}
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          )}
+        />
       </Field>
 
       <Button type="submit" disabled={submitting}>
         {submitting ? '...' : '저장'}
       </Button>
     </form>
+  );
+}
+
+interface ControlledInputProps {
+  control: Control<FormValues>;
+  name: keyof FormValues;
+  className?: string;
+  type?: string;
+  placeholder?: string;
+  maxLength?: number;
+}
+
+function ControlledInput({ control, name, className, type, placeholder, maxLength }: ControlledInputProps) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <Input
+          type={type}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          className={className}
+          value={typeof field.value === 'string' ? field.value : (field.value ?? '') as string}
+          onChange={(e) => field.onChange(e.currentTarget.value)}
+          onBlur={field.onBlur}
+          name={field.name}
+          ref={field.ref}
+        />
+      )}
+    />
   );
 }
 
