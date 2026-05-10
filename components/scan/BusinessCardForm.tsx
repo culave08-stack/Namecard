@@ -27,6 +27,7 @@ const FormSchema = z.object({
   countryName: z.string().optional(),
   countryCode: z.string().optional(),
   personName: z.string().min(1),
+  personNameEn: z.string().optional(),
   position: z.string().optional(),
   industry: z.string().optional(),
   interestedService: z.enum(
@@ -45,6 +46,7 @@ const FIELD_TO_FORM_KEYS: Record<string, Array<keyof FormValues>> = {
   website: ['website'],
   country: ['countryName', 'countryCode'],
   personName: ['personName'],
+  personNameEn: ['personNameEn'],
   position: ['position'],
   industry: ['industry'],
 };
@@ -66,6 +68,7 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
     countryName: defaults?.country?.name ?? '',
     countryCode: defaults?.country?.code ?? '',
     personName: defaults?.personName ?? '',
+    personNameEn: defaults?.personNameEn ?? '',
     position: defaults?.position ?? '',
     industry: defaults?.industry ?? '',
     interestedService: undefined,
@@ -132,6 +135,10 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
         error={errors.personName ? t('required') : undefined}
       >
         <ControlledInput control={control} name="personName" className={lowClass('personName')} />
+      </Field>
+
+      <Field label={t('personNameEn')} showAi={showAi('personNameEn')}>
+        <ControlledInput control={control} name="personNameEn" className={lowClass('personNameEn')} />
       </Field>
 
       <Field label={t('position')} showAi={showAi('position')}>

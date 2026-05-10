@@ -9,6 +9,7 @@ export const ScanResultSchema = z.object({
     .object({ name: z.string(), code: z.string().length(2) })
     .nullable(),
   personName: z.string().nullable(),
+  personNameEn: z.string().nullable().optional(),
   position: z.string().nullable(),
   industry: z.string().nullable(),
   detectedLanguage: z.enum(['ko', 'en', 'vi', 'ja']).nullable(),

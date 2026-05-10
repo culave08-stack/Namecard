@@ -116,6 +116,7 @@ export default function ScanPage() {
             ? { name: values.countryName, code: values.countryCode.toUpperCase() }
             : undefined,
         personName: values.personName,
+        personNameEn: values.personNameEn || undefined,
         position: values.position || undefined,
         industry: values.industry || undefined,
         interestedService: values.interestedService,

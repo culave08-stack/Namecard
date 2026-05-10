@@ -36,6 +36,7 @@ export interface BusinessCard {
   websiteGuessed?: boolean;
   country?: Country;
   personName: string;
+  personNameEn?: string;
   position?: string;
   industry?: string;
   interestedService: InterestedService;
@@ -52,6 +53,7 @@ export type ScanResult = {
   websiteGuessed: boolean;
   country: Country | null;
   personName: string | null;
+  personNameEn: string | null;
   position: string | null;
   industry: string | null;
   detectedLanguage: DetectedLanguage | null;

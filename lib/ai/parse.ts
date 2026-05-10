@@ -36,6 +36,7 @@ export type FormDefaults = Pick<
   | 'websiteGuessed'
   | 'country'
   | 'personName'
+  | 'personNameEn'
   | 'position'
   | 'industry'
   | 'detectedLanguage'
@@ -68,6 +69,7 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
   const website = cleanString(parsed.website);
   const country = cleanCountry(parsed.country);
   const personName = cleanString(parsed.personName);
+  const personNameEn = cleanString(parsed.personNameEn);
   const position = cleanString(parsed.position);
   const industry = cleanString(parsed.industry);
 
@@ -76,6 +78,7 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
   if (website) aiFilledFields.push('website');
   if (country) aiFilledFields.push('country');
   if (personName) aiFilledFields.push('personName');
+  if (personNameEn) aiFilledFields.push('personNameEn');
   if (position) aiFilledFields.push('position');
   if (industry) aiFilledFields.push('industry');
 
@@ -85,6 +88,7 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
     websiteGuessed: parsed.websiteGuessed && Boolean(website),
     country,
     personName: personName ?? '',
+    personNameEn,
     position,
     industry,
     detectedLanguage: parsed.detectedLanguage ?? undefined,
