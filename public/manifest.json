@@ -1,0 +1,19 @@
+{
+  "name": "명함 스캐너",
+  "short_name": "명함 스캐너",
+  "description": "AI로 명함을 스캔하고 정리하는 모바일 우선 앱",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ]
+}
