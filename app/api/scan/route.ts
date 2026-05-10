@@ -25,19 +25,20 @@ export async function POST(request: Request): Promise<Response> {
     return errorResponse(400, 'invalid_image', 'frontImage is required');
   }
 
-  const client = createVisionClient();
-
   let raw: string;
   try {
+    const client = createVisionClient();
     raw = await client.scan({
       frontImageBase64: parsed.data.frontImage,
       backImageBase64: parsed.data.backImage,
     });
   } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[/api/scan] AI call failed:', message);
     if (err instanceof Error && (err.name === 'AbortError' || /timeout/i.test(err.message))) {
       return errorResponse(504, 'timeout', 'Gemini API timed out');
     }
-    return errorResponse(502, 'ai_failed', err instanceof Error ? err.message : 'Unknown AI error');
+    return errorResponse(502, 'ai_failed', message);
   }
 
   try {
