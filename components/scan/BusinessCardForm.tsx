@@ -17,7 +17,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { AiBadge } from '@/components/shared/AiBadge';
-import { INTERESTED_SERVICES, type InterestedService } from '@/types/business-card';
+import {
+  INDUSTRIES,
+  INTERESTED_SERVICES,
+  type InterestedService,
+} from '@/types/business-card';
 import type { FormDefaults } from '@/lib/ai/parse';
 
 export interface InitialUserFields {
@@ -160,7 +164,27 @@ export function BusinessCardForm({
       </Field>
 
       <Field label={t('industry')} showAi={showAi('industry')}>
-        <ControlledInput control={control} name="industry" className={lowClass('industry')} />
+        <Controller
+          control={control}
+          name="industry"
+          render={({ field }) => (
+            <Select
+              onValueChange={(v) => field.onChange(v ?? '')}
+              value={field.value ?? ''}
+            >
+              <SelectTrigger className={lowClass('industry')}>
+                <SelectValue placeholder={t('selectIndustry')} />
+              </SelectTrigger>
+              <SelectContent>
+                {INDUSTRIES.map((label) => (
+                  <SelectItem key={label} value={label}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
       </Field>
 
       <Field

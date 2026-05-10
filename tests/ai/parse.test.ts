@@ -1,6 +1,10 @@
 // tests/ai/parse.test.ts
 import { describe, it, expect } from 'vitest';
-import { parseScanResponse, scanResultToFormDefaults } from '@/lib/ai/parse';
+import {
+  normalizeIndustry,
+  parseScanResponse,
+  scanResultToFormDefaults,
+} from '@/lib/ai/parse';
 
 describe('parseScanResponse', () => {
   it('parses valid JSON string', () => {
@@ -82,5 +86,57 @@ describe('scanResultToFormDefaults', () => {
     expect(defaults.website).toBe('acme.com');
     expect(defaults.websiteGuessed).toBe(true);
     expect(defaults.aiFilledFields).toContain('website');
+  });
+
+  it('normalizes industry to a canonical taxonomy value', () => {
+    const parsed = {
+      companyName: 'X',
+      website: null,
+      websiteGuessed: false,
+      country: null,
+      personName: 'Y',
+      position: null,
+      industry: 'Exhibition Design',
+      detectedLanguage: null,
+    };
+    const defaults = scanResultToFormDefaults(parsed);
+    expect(defaults.industry).toBe('디자인·광고');
+    expect(defaults.aiFilledFields).toContain('industry');
+  });
+});
+
+describe('normalizeIndustry', () => {
+  it('returns canonical labels unchanged', () => {
+    expect(normalizeIndustry('교육')).toBe('교육');
+    expect(normalizeIndustry('IT·소프트웨어')).toBe('IT·소프트웨어');
+    expect(normalizeIndustry('연구·R&D')).toBe('연구·R&D');
+  });
+
+  it('maps English aliases to Korean canonical', () => {
+    expect(normalizeIndustry('IT')).toBe('IT·소프트웨어');
+    expect(normalizeIndustry('Software')).toBe('IT·소프트웨어');
+    expect(normalizeIndustry('Manufacturing')).toBe('제조');
+    expect(normalizeIndustry('Healthcare')).toBe('의료·헬스케어');
+    expect(normalizeIndustry('Logistics')).toBe('물류·운송');
+    expect(normalizeIndustry('Marketing')).toBe('디자인·광고');
+  });
+
+  it('is separator/whitespace insensitive', () => {
+    expect(normalizeIndustry('IT/소프트웨어')).toBe('IT·소프트웨어');
+    expect(normalizeIndustry('IT 소프트웨어')).toBe('IT·소프트웨어');
+    expect(normalizeIndustry('it·소프트웨어')).toBe('IT·소프트웨어');
+  });
+
+  it('returns undefined for empty / unknown values', () => {
+    expect(normalizeIndustry(null)).toBeUndefined();
+    expect(normalizeIndustry('')).toBeUndefined();
+    expect(normalizeIndustry('   ')).toBeUndefined();
+    expect(normalizeIndustry('....')).toBeUndefined();
+    expect(normalizeIndustry('완전히 새로운 분야 xyzzy')).toBeUndefined();
+  });
+
+  it('matches substring against canonical labels', () => {
+    expect(normalizeIndustry('의료 헬스케어 관련 기업')).toBe('의료·헬스케어');
+    expect(normalizeIndustry('디자인 및 광고 대행')).toBe('디자인·광고');
   });
 });

@@ -20,6 +20,31 @@ export const INTERESTED_SERVICES: InterestedService[] = [
 export type DetectedLanguage = 'ko' | 'en' | 'vi' | 'ja';
 export type Confidence = 'low' | 'mid' | 'high';
 
+// Fixed industry taxonomy (단일 소스 — AI 프롬프트, 폼 dropdown, 정규화 모두 여기 참조)
+export const INDUSTRIES = [
+  '교육',
+  'IT·소프트웨어',
+  '제조',
+  '유통·리테일',
+  '서비스',
+  '의료·헬스케어',
+  '금융',
+  '건설·부동산',
+  '식음료',
+  '엔터테인먼트·미디어',
+  '디자인·광고',
+  '컨설팅',
+  '물류·운송',
+  '공공·정부',
+  '농업·식품',
+  '에너지·환경',
+  '법률·회계',
+  '연구·R&D',
+  '기타',
+] as const;
+
+export type Industry = (typeof INDUSTRIES)[number];
+
 export interface Country {
   name: string;
   code: string;

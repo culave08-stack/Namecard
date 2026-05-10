@@ -30,12 +30,16 @@ class GeminiVisionClient implements VisionClient {
     }
     parts.push({ text: SCAN_USER_TEXT });
 
+    // Enable Google Search grounding so the model can look up the company
+    // (especially for industry classification) instead of guessing from the
+    // card alone. NOTE: Gemini does not allow responseMimeType together with
+    // tools — JSON is enforced via the system prompt + extractJson() instead.
     const response = await this.client.models.generateContent({
       model: this.model,
       contents: [{ role: 'user', parts }],
       config: {
         systemInstruction: SCAN_SYSTEM_PROMPT,
-        responseMimeType: 'application/json',
+        tools: [{ googleSearch: {} }],
       },
     });
 
