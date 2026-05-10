@@ -17,8 +17,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { AiBadge } from '@/components/shared/AiBadge';
-import { INTERESTED_SERVICES } from '@/types/business-card';
+import { INTERESTED_SERVICES, type InterestedService } from '@/types/business-card';
 import type { FormDefaults } from '@/lib/ai/parse';
+
+export interface InitialUserFields {
+  interestedService?: InterestedService;
+  interestedServiceOther?: string;
+  note?: string;
+}
 
 const FormSchema = z.object({
   companyName: z.string().min(1),
@@ -53,11 +59,19 @@ const FIELD_TO_FORM_KEYS: Record<string, Array<keyof FormValues>> = {
 
 export interface BusinessCardFormProps {
   defaults?: FormDefaults;
+  initialUserFields?: InitialUserFields;
   onSubmit: (values: FormValues) => Promise<void> | void;
   submitting?: boolean;
+  submitLabel?: string;
 }
 
-export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCardFormProps) {
+export function BusinessCardForm({
+  defaults,
+  initialUserFields,
+  onSubmit,
+  submitting,
+  submitLabel,
+}: BusinessCardFormProps) {
   const t = useTranslations('form');
   const tService = useTranslations('service');
 
@@ -71,10 +85,10 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
     personNameEn: defaults?.personNameEn ?? '',
     position: defaults?.position ?? '',
     industry: defaults?.industry ?? '',
-    interestedService: undefined,
-    interestedServiceOther: '',
-    note: '',
-  }), [defaults]);
+    interestedService: initialUserFields?.interestedService,
+    interestedServiceOther: initialUserFields?.interestedServiceOther ?? '',
+    note: initialUserFields?.note ?? '',
+  }), [defaults, initialUserFields]);
 
   const {
     handleSubmit,
@@ -195,7 +209,7 @@ export function BusinessCardForm({ defaults, onSubmit, submitting }: BusinessCar
       </Field>
 
       <Button type="submit" disabled={submitting}>
-        {submitting ? '...' : '저장'}
+        {submitting ? '...' : (submitLabel ?? '저장')}
       </Button>
     </form>
   );

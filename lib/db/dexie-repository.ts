@@ -1,6 +1,6 @@
 // lib/db/dexie-repository.ts
 import { CardDatabase, type SerializedBlob, type StoredBusinessCard } from './schema';
-import type { CardRepository, NewBusinessCard } from './repository';
+import type { CardRepository, NewBusinessCard, UpdateBusinessCard } from './repository';
 import type { BusinessCard } from '@/types/business-card';
 
 // Serialize a Blob to { data: ArrayBuffer, type: string }
@@ -61,6 +61,24 @@ export class DexieCardRepository implements CardRepository {
   async getById(id: string): Promise<BusinessCard | undefined> {
     const stored = await this.db.cards.get(id);
     return stored ? fromStored(stored) : undefined;
+  }
+
+  async update(id: string, patch: UpdateBusinessCard): Promise<BusinessCard> {
+    const existing = await this.getById(id);
+    if (!existing) throw new Error(`Card ${id} not found`);
+    const merged: BusinessCard = {
+      ...existing,
+      ...patch,
+      id,
+      createdAt: existing.createdAt,
+      updatedAt: new Date().toISOString(),
+    };
+    await this.db.cards.put(await toStored(merged));
+    return merged;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.db.cards.delete(id);
   }
 
   async clearAll(): Promise<void> {

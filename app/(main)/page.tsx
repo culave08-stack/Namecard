@@ -8,9 +8,17 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold">{t('title')}</h1>
-      <Link href="/scan" className={buttonVariants({ size: 'lg' })}>
-        {t('addCard')}
-      </Link>
+      <div className="flex flex-col gap-2">
+        <Link href="/scan" className={buttonVariants({ size: 'lg' })}>
+          {t('addCard')}
+        </Link>
+        <Link
+          href="/cards"
+          className={buttonVariants({ size: 'lg', variant: 'outline' })}
+        >
+          {t('viewAll')}
+        </Link>
+      </div>
       <LastCardPreview />
     </div>
   );

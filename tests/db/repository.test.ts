@@ -54,4 +54,31 @@ describe('DexieCardRepository', () => {
     const latest = await repo.getLatest();
     expect(latest?.companyName).toBe('Only');
   });
+
+  it('update merges patch and bumps updatedAt while preserving createdAt and id', async () => {
+    const saved = await repo.save(makeCard({ companyName: 'Old', personName: 'Kim' }));
+    await new Promise((r) => setTimeout(r, 5));
+    const updated = await repo.update(saved.id, { companyName: 'New', position: 'CTO' });
+    expect(updated.id).toBe(saved.id);
+    expect(updated.companyName).toBe('New');
+    expect(updated.personName).toBe('Kim');
+    expect(updated.position).toBe('CTO');
+    expect(updated.createdAt).toBe(saved.createdAt);
+    expect(updated.updatedAt).not.toBe(saved.updatedAt);
+
+    const refetched = await repo.getById(saved.id);
+    expect(refetched?.companyName).toBe('New');
+    expect(refetched?.frontImage).toBeInstanceOf(Blob);
+  });
+
+  it('update throws when id is unknown', async () => {
+    await expect(repo.update('missing-id', { companyName: 'X' })).rejects.toThrow(/not found/);
+  });
+
+  it('delete removes a card', async () => {
+    const saved = await repo.save(makeCard({ companyName: 'ToRemove' }));
+    expect(await repo.getById(saved.id)).toBeDefined();
+    await repo.delete(saved.id);
+    expect(await repo.getById(saved.id)).toBeUndefined();
+  });
 });

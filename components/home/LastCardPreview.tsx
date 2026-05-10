@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ImagePreview } from '@/components/scan/ImagePreview';
 import { getCardRepository } from '@/lib/db/dexie-repository';
@@ -21,11 +22,14 @@ export function LastCardPreview() {
     return <p className="text-sm text-muted-foreground">{t('empty')}</p>;
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border p-3">
+    <Link
+      href={`/cards/${card.id}`}
+      className="flex flex-col gap-2 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+    >
       <p className="text-xs text-muted-foreground">{t('lastSaved')}</p>
       <p className="font-medium">{card.companyName}</p>
       <p className="text-sm text-muted-foreground">{card.personName}</p>
       <ImagePreview blob={card.frontImage} alt={card.companyName} />
-    </div>
+    </Link>
   );
 }
