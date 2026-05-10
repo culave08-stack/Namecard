@@ -74,6 +74,9 @@
     "aidt": "AIDT",
     "other": "기타"
   },
+  "export": {
+    "xlsx": "엑셀 내보내기"
+  },
   "auth": {
     "loginTitle": "로그인",
     "signupTitle": "회원가입",

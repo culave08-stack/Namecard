@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { CardListItem } from '@/components/cards/CardListItem';
+import { Button } from '@/components/ui/button';
 import { getCardRepository } from '@/lib/db/supabase-repository';
 import type { BusinessCard, InterestedService } from '@/types/business-card';
 import { INTERESTED_SERVICES } from '@/types/business-card';
@@ -22,6 +23,7 @@ const COUNTRY_ALL = '__all__';
 export default function CardsListPage() {
   const t = useTranslations('list');
   const tService = useTranslations('service');
+  const tExport = useTranslations('export');
   const [cards, setCards] = useState<BusinessCard[] | undefined>(undefined);
   const [query, setQuery] = useState('');
   const [serviceFilter, setServiceFilter] = useState<string>(SERVICE_ALL);
@@ -125,7 +127,31 @@ export default function CardsListPage() {
         </div>
       ) : (
         <>
-          <p className="text-xs text-muted-foreground">{t('count', { n: filtered.length })}</p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              {t('count', { n: filtered.length })}
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={filtered.length === 0}
+              onClick={async () => {
+                const { downloadCardsXlsx } = await import('@/lib/export/xlsx');
+                downloadCardsXlsx(filtered, {
+                  service: {
+                    kinderboard: tService('kinderboard'),
+                    lumitiq: tService('lumitiq'),
+                    artbongbong: tService('artbongbong'),
+                    turuturu: tService('turuturu'),
+                    aidt: tService('aidt'),
+                    other: tService('other'),
+                  },
+                });
+              }}
+            >
+              {tExport('xlsx')}
+            </Button>
+          </div>
           {filtered.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">{t('empty')}</p>
           ) : (
