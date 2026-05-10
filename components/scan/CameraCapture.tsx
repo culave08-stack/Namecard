@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -12,10 +12,30 @@ export interface CameraCaptureProps {
 
 export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
   const t = useTranslations('scan');
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [mode, setMode] = useState<'init' | 'live' | 'fallback'>('init');
+
+  const attachStreamToVideo = useCallback(() => {
+    const v = videoRef.current;
+    const s = streamRef.current;
+    if (v && s && v.srcObject !== s) {
+      v.srcObject = s;
+      v.play().catch(() => {
+        // iOS Safari may reject play() without a user gesture; the stream is
+        // still attached and a tap on the video will resume it.
+      });
+    }
+  }, []);
+
+  const handleVideoRef = useCallback(
+    (el: HTMLVideoElement | null) => {
+      videoRef.current = el;
+      if (el) attachStreamToVideo();
+    },
+    [attachStreamToVideo]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -34,11 +54,8 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
           return;
         }
         streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-        }
         setMode('live');
+        attachStreamToVideo();
       } catch {
         toast.warning(t('permissionDenied'));
         setMode('fallback');
@@ -50,7 +67,7 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
       streamRef.current?.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     };
-  }, [t]);
+  }, [t, attachStreamToVideo]);
 
   function captureFromVideo() {
     const video = videoRef.current;
@@ -76,13 +93,25 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
     e.target.value = '';
   }
 
+  function handleVideoTap() {
+    const v = videoRef.current;
+    if (v && v.paused) v.play().catch(() => {});
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm font-medium">{label}</p>
 
       {mode === 'live' && (
         <div className="relative aspect-[86/54] w-full overflow-hidden rounded-lg bg-black">
-          <video ref={videoRef} className="h-full w-full object-cover" playsInline muted />
+          <video
+            ref={handleVideoRef}
+            onClick={handleVideoTap}
+            className="h-full w-full object-cover"
+            playsInline
+            muted
+            autoPlay
+          />
           <div className="pointer-events-none absolute inset-4 rounded-md border-2 border-dashed border-white/80" />
           <p className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
             {t('guideHint')}
