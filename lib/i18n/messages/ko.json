@@ -78,6 +78,9 @@
   "export": {
     "xlsx": "엑셀 내보내기"
   },
+  "offline": {
+    "banner": "오프라인 — 새 명함 스캔/저장은 네트워크 연결 후 가능합니다"
+  },
   "auth": {
     "loginTitle": "로그인",
     "signupTitle": "회원가입",

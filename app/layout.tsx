@@ -5,6 +5,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { ServiceWorkerRegistration } from '@/components/pwa/ServiceWorkerRegistration';
+import { OfflineBanner } from '@/components/pwa/OfflineBanner';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
@@ -21,9 +23,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           <NextIntlClientProvider locale={locale} messages={messages}>
             <main className="mx-auto min-h-dvh w-full max-w-[640px] px-4 py-6">
+              <OfflineBanner />
               {children}
             </main>
             <Toaster richColors position="top-center" />
+            <ServiceWorkerRegistration />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
