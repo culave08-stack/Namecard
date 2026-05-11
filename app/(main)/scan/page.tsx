@@ -3,7 +3,7 @@
 import { useReducer, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, RotateCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { ImagePreview } from '@/components/scan/ImagePreview';
 import { ScanProgress } from '@/components/scan/ScanProgress';
 import { BusinessCardForm, type FormValues } from '@/components/scan/BusinessCardForm';
 import { resizeImage } from '@/lib/image/resize';
+import { rotateImage90 } from '@/lib/image/rotate';
 import { scanResultToFormDefaults, type FormDefaults } from '@/lib/ai/parse';
 import type { ScanResultParsed } from '@/lib/ai/schema';
 import { getCardRepository } from '@/lib/db/supabase-repository';
@@ -28,6 +29,8 @@ interface State {
 type Action =
   | { type: 'capture-front'; blob: Blob }
   | { type: 'capture-back'; blob: Blob }
+  | { type: 'rotate-front'; blob: Blob }
+  | { type: 'rotate-back'; blob: Blob }
   | { type: 'retake' }
   | { type: 'start-analyze' }
   | { type: 'analyzed'; defaults: FormDefaults }
@@ -38,6 +41,10 @@ function reducer(s: State, a: Action): State {
     case 'capture-front':
       return { ...s, step: 'preview', front: a.blob };
     case 'capture-back':
+      return { ...s, back: a.blob };
+    case 'rotate-front':
+      return { ...s, front: a.blob };
+    case 'rotate-back':
       return { ...s, back: a.blob };
     case 'retake':
       return { step: 'camera' };
@@ -163,17 +170,23 @@ export default function ScanPage() {
 
       {state.step === 'preview' && state.front && (
         <div className="flex flex-col gap-4">
-          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
-            <div className="aspect-card w-full bg-muted">
-              <ImagePreview src={state.front} alt="앞면" />
-            </div>
-          </div>
+          <PreviewWithRotate
+            src={state.front}
+            alt="앞면"
+            onRotate={async () => {
+              const rotated = await rotateImage90(state.front!, 'cw');
+              dispatch({ type: 'rotate-front', blob: rotated });
+            }}
+          />
           {state.back ? (
-            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
-              <div className="aspect-card w-full bg-muted">
-                <ImagePreview src={state.back} alt="뒷면" />
-              </div>
-            </div>
+            <PreviewWithRotate
+              src={state.back}
+              alt="뒷면"
+              onRotate={async () => {
+                const rotated = await rotateImage90(state.back!, 'cw');
+                dispatch({ type: 'rotate-back', blob: rotated });
+              }}
+            />
           ) : (
             <CameraCapture
               label={t('addBack')}
@@ -205,6 +218,46 @@ export default function ScanPage() {
           submitting={submitting}
         />
       )}
+    </div>
+  );
+}
+
+function PreviewWithRotate({
+  src,
+  alt,
+  onRotate,
+}: {
+  src: Blob | string;
+  alt: string;
+  onRotate: () => Promise<void> | void;
+}) {
+  const [rotating, setRotating] = useState(false);
+  async function handleClick() {
+    if (rotating) return;
+    setRotating(true);
+    try {
+      await onRotate();
+    } finally {
+      setRotating(false);
+    }
+  }
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-card">
+      <div className="aspect-card w-full bg-muted">
+        <ImagePreview src={src} alt={alt} />
+      </div>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={rotating}
+        aria-label="90도 회전"
+        className="absolute right-2 top-2 inline-flex size-9 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition-transform active:scale-95 disabled:opacity-60"
+      >
+        <RotateCw
+          className={`size-4 ${rotating ? 'animate-spin' : ''}`}
+          strokeWidth={1.75}
+        />
+      </button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useRef } from 'react';
+import { useReducer, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   CheckCircle2,
   Loader2,
+  RotateCw,
   Trash2,
   Upload,
 } from 'lucide-react';
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { ImagePreview } from '@/components/scan/ImagePreview';
 import { resizeImage } from '@/lib/image/resize';
+import { rotateImage90 } from '@/lib/image/rotate';
 import { scanResultToFormDefaults, type FormDefaults } from '@/lib/ai/parse';
 import type { ScanResultParsed } from '@/lib/ai/schema';
 import { getCardRepository } from '@/lib/db/supabase-repository';
@@ -59,6 +61,7 @@ interface State {
 
 type Action =
   | { type: 'add-files'; blobs: Blob[] }
+  | { type: 'rotate-item'; id: string; blob: Blob }
   | { type: 'start-analysis' }
   | { type: 'item-status'; id: string; patch: Partial<Item> }
   | { type: 'enter-review' }
@@ -92,6 +95,13 @@ function reducer(s: State, a: Action): State {
       }));
       return { ...s, items: [...s.items, ...newItems] };
     }
+    case 'rotate-item':
+      return {
+        ...s,
+        items: s.items.map((it) =>
+          it.id === a.id ? { ...it, blob: a.blob } : it
+        ),
+      };
     case 'start-analysis':
       return { ...s, step: 'analyzing' };
     case 'item-status':
@@ -324,6 +334,12 @@ export default function BatchScanPage() {
                   <p className="flex-1 truncate text-sm text-muted-foreground">
                     이미지 {state.items.indexOf(it) + 1}
                   </p>
+                  <RotateButton
+                    onRotate={async () => {
+                      const rotated = await rotateImage90(it.blob, 'cw');
+                      dispatch({ type: 'rotate-item', id: it.id, blob: rotated });
+                    }}
+                  />
                   <button
                     type="button"
                     onClick={() => dispatch({ type: 'remove', id: it.id })}
@@ -426,6 +442,10 @@ export default function BatchScanPage() {
                   dispatch({ type: 'set-service', id: it.id, service })
                 }
                 onToggleSkip={() => dispatch({ type: 'toggle-skip', id: it.id })}
+                onRotate={async () => {
+                  const rotated = await rotateImage90(it.blob, 'cw');
+                  dispatch({ type: 'rotate-item', id: it.id, blob: rotated });
+                }}
               />
             ))}
           </ul>
@@ -484,10 +504,12 @@ function ReviewItem({
   item,
   onServiceChange,
   onToggleSkip,
+  onRotate,
 }: {
   item: Item;
   onServiceChange: (service: InterestedService | undefined) => void;
   onToggleSkip: () => void;
+  onRotate: () => Promise<void> | void;
 }) {
   const tService = useTranslations('service');
 
@@ -516,8 +538,9 @@ function ReviewItem({
         skipped ? 'border-border/40 opacity-60' : 'border-border'
       }`}
     >
-      <div className="aspect-card h-14 shrink-0 overflow-hidden rounded-md bg-muted">
+      <div className="relative aspect-card h-14 shrink-0 overflow-hidden rounded-md bg-muted">
         <ImagePreview src={item.blob} alt={item.ai?.companyName ?? '명함'} />
+        <RotateButton compact onRotate={onRotate} />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -560,5 +583,55 @@ function ReviewItem({
         {skipped ? '복구' : '제외'}
       </button>
     </li>
+  );
+}
+
+function RotateButton({
+  onRotate,
+  compact = false,
+}: {
+  onRotate: () => Promise<void> | void;
+  compact?: boolean;
+}) {
+  const [rotating, setRotating] = useState(false);
+  async function handleClick(e: React.MouseEvent) {
+    e.preventDefault();
+    if (rotating) return;
+    setRotating(true);
+    try {
+      await onRotate();
+    } finally {
+      setRotating(false);
+    }
+  }
+  if (compact) {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={rotating}
+        aria-label="90도 회전"
+        className="absolute right-1 top-1 inline-flex size-6 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform active:scale-90 disabled:opacity-60"
+      >
+        <RotateCw
+          className={`size-3 ${rotating ? 'animate-spin' : ''}`}
+          strokeWidth={1.75}
+        />
+      </button>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={rotating}
+      aria-label="90도 회전"
+      className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-60"
+    >
+      <RotateCw
+        className={`size-4 ${rotating ? 'animate-spin' : ''}`}
+        strokeWidth={1.75}
+      />
+    </button>
   );
 }
