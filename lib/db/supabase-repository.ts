@@ -33,6 +33,7 @@ interface CardRow {
   person_name_en: string | null;
   position: string | null;
   industry: string | null;
+  company_type: string | null;
   interested_service: string;
   interested_service_other: string | null;
   note: string | null;
@@ -85,6 +86,7 @@ export class SupabaseCardRepository implements CardRepository {
       personNameEn: row.person_name_en ?? undefined,
       position: row.position ?? undefined,
       industry: row.industry ?? undefined,
+      companyType: row.company_type ?? undefined,
       interestedService: row.interested_service as InterestedService,
       interestedServiceOther: row.interested_service_other ?? undefined,
       note: row.note ?? undefined,
@@ -128,6 +130,7 @@ export class SupabaseCardRepository implements CardRepository {
         person_name_en: card.personNameEn ?? null,
         position: card.position ?? null,
         industry: card.industry ?? null,
+        company_type: card.companyType ?? null,
         interested_service: card.interestedService,
         interested_service_other: card.interestedServiceOther ?? null,
         note: card.note ?? null,
@@ -194,6 +197,7 @@ export class SupabaseCardRepository implements CardRepository {
     if (patch.personNameEn !== undefined) row.person_name_en = patch.personNameEn ?? null;
     if (patch.position !== undefined) row.position = patch.position ?? null;
     if (patch.industry !== undefined) row.industry = patch.industry ?? null;
+    if (patch.companyType !== undefined) row.company_type = patch.companyType ?? null;
     if (patch.interestedService !== undefined) row.interested_service = patch.interestedService;
     if (patch.interestedServiceOther !== undefined)
       row.interested_service_other = patch.interestedServiceOther ?? null;

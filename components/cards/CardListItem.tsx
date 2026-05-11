@@ -47,6 +47,7 @@ export function CardListItem({ card }: CardListItemProps) {
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           {card.country?.name && <Tag>{card.country.name}</Tag>}
+          {card.companyType && <Tag>{card.companyType}</Tag>}
           {card.industry && <Tag>{card.industry}</Tag>}
           <Tag accent>{serviceLabel}</Tag>
         </div>

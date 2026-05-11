@@ -1,6 +1,7 @@
 // tests/ai/parse.test.ts
 import { describe, it, expect } from 'vitest';
 import {
+  normalizeCompanyType,
   normalizeIndustry,
   parseScanResponse,
   scanResultToFormDefaults,
@@ -138,5 +139,43 @@ describe('normalizeIndustry', () => {
   it('matches substring against canonical labels', () => {
     expect(normalizeIndustry('의료 헬스케어 관련 기업')).toBe('의료·헬스케어');
     expect(normalizeIndustry('디자인 및 광고 대행')).toBe('디자인·광고');
+  });
+});
+
+describe('normalizeCompanyType', () => {
+  it('returns canonical labels unchanged', () => {
+    expect(normalizeCompanyType('학교')).toBe('학교');
+    expect(normalizeCompanyType('에듀테크')).toBe('에듀테크');
+    expect(normalizeCompanyType('협회·단체')).toBe('협회·단체');
+  });
+
+  it('maps English aliases to Korean canonical', () => {
+    expect(normalizeCompanyType('School')).toBe('학교');
+    expect(normalizeCompanyType('Kindergarten')).toBe('유치원·어린이집');
+    expect(normalizeCompanyType('Academy')).toBe('학원');
+    expect(normalizeCompanyType('EdTech')).toBe('에듀테크');
+    expect(normalizeCompanyType('Publisher')).toBe('출판사');
+    expect(normalizeCompanyType('Distributor')).toBe('유통사');
+    expect(normalizeCompanyType('Government')).toBe('정부기관');
+    expect(normalizeCompanyType('Startup')).toBe('스타트업');
+  });
+
+  it('is separator/whitespace insensitive', () => {
+    expect(normalizeCompanyType('유치원/어린이집')).toBe('유치원·어린이집');
+    expect(normalizeCompanyType('연구·R&D 연구기관')).toBe('연구기관');
+    expect(normalizeCompanyType('협회 단체')).toBe('협회·단체');
+  });
+
+  it('returns undefined for empty / unknown values', () => {
+    expect(normalizeCompanyType(null)).toBeUndefined();
+    expect(normalizeCompanyType('')).toBeUndefined();
+    expect(normalizeCompanyType('....')).toBeUndefined();
+    expect(normalizeCompanyType('완전히 새로운 조직 xyzzy')).toBeUndefined();
+  });
+
+  it('matches substring against canonical labels', () => {
+    expect(normalizeCompanyType('서울중앙초등학교')).toBe('학교');
+    expect(normalizeCompanyType('Edtech company in Seoul')).toBe('에듀테크');
+    expect(normalizeCompanyType('카카오 스타트업 출신')).toBe('스타트업');
   });
 });

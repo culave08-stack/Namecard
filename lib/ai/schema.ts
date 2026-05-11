@@ -12,6 +12,7 @@ export const ScanResultSchema = z.object({
   personNameEn: z.string().nullable().optional(),
   position: z.string().nullable(),
   industry: z.string().nullable(),
+  companyType: z.string().nullable().optional(),
   detectedLanguage: z.enum(['ko', 'en', 'vi', 'ja']).nullable(),
   confidence: z.record(z.string(), z.enum(['low', 'mid', 'high'])).optional(),
 });

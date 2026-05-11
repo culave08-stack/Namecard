@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { AiBadge } from '@/components/shared/AiBadge';
 import {
+  COMPANY_TYPES,
   INDUSTRIES,
   INTERESTED_SERVICES,
   type InterestedService,
@@ -40,6 +41,7 @@ const FormSchema = z.object({
   personNameEn: z.string().optional(),
   position: z.string().optional(),
   industry: z.string().optional(),
+  companyType: z.string().optional(),
   interestedService: z.enum(
     ['kinderboard', 'lumitiq', 'artbongbong', 'turuturu', 'aidt', 'other'],
     { message: '서비스를 선택하세요' }
@@ -59,6 +61,7 @@ const FIELD_TO_FORM_KEYS: Record<string, Array<keyof FormValues>> = {
   personNameEn: ['personNameEn'],
   position: ['position'],
   industry: ['industry'],
+  companyType: ['companyType'],
 };
 
 export interface BusinessCardFormProps {
@@ -89,6 +92,7 @@ export function BusinessCardForm({
     personNameEn: defaults?.personNameEn ?? '',
     position: defaults?.position ?? '',
     industry: defaults?.industry ?? '',
+    companyType: defaults?.companyType ?? '',
     interestedService: initialUserFields?.interestedService,
     interestedServiceOther: initialUserFields?.interestedServiceOther ?? '',
     note: initialUserFields?.note ?? '',
@@ -167,6 +171,30 @@ export function BusinessCardForm({
                 </SelectTrigger>
                 <SelectContent>
                   {INDUSTRIES.map((label) => (
+                    <SelectItem key={label} value={label}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+
+        <Field label={t('companyType')} showAi={showAi('companyType')}>
+          <Controller
+            control={control}
+            name="companyType"
+            render={({ field }) => (
+              <Select
+                onValueChange={(v) => field.onChange(v ?? '')}
+                value={field.value ?? ''}
+              >
+                <SelectTrigger className={`h-11 ${lowClass('companyType')}`}>
+                  <SelectValue placeholder={t('selectCompanyType')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {COMPANY_TYPES.map((label) => (
                     <SelectItem key={label} value={label}>
                       {label}
                     </SelectItem>

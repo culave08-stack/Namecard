@@ -25,6 +25,7 @@ create table if not exists public.cards (
   person_name_en            text,
   position                  text,
   industry                  text,
+  company_type              text,
   interested_service        text not null,
   interested_service_other  text,
   note                      text,
@@ -37,6 +38,10 @@ create table if not exists public.cards (
 
 create index if not exists cards_user_created_idx
   on public.cards (user_id, created_at desc);
+
+-- Migration: companyType added later (safe to re-run)
+alter table public.cards
+  add column if not exists company_type text;
 
 -- 2. RLS ---------------------------------------------------------------------
 

@@ -121,6 +121,7 @@ export default function ScanPage() {
         personNameEn: values.personNameEn || undefined,
         position: values.position || undefined,
         industry: values.industry || undefined,
+        companyType: values.companyType || undefined,
         interestedService: values.interestedService,
         interestedServiceOther: values.interestedServiceOther || undefined,
         note: values.note || undefined,

@@ -52,6 +52,7 @@ export default function CardDetailPage() {
         personNameEn: values.personNameEn || undefined,
         position: values.position || undefined,
         industry: values.industry || undefined,
+        companyType: values.companyType || undefined,
         interestedService: values.interestedService,
         interestedServiceOther: values.interestedServiceOther || undefined,
         note: values.note || undefined,
@@ -145,6 +146,7 @@ export default function CardDetailPage() {
               personNameEn: card.personNameEn,
               position: card.position,
               industry: card.industry,
+              companyType: card.companyType,
               detectedLanguage: card.detectedLanguage,
               aiFilledFields: [],
               aiConfidence: undefined,
@@ -177,6 +179,7 @@ export default function CardDetailPage() {
             </p>
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               {card.country?.name && <Tag>{card.country.name}</Tag>}
+              {card.companyType && <Tag>{card.companyType}</Tag>}
               {card.industry && <Tag>{card.industry}</Tag>}
               <Tag accent>{serviceLabel}</Tag>
             </div>
@@ -191,6 +194,7 @@ export default function CardDetailPage() {
               }
             />
             <DetailRow label={tForm('industry')} value={card.industry} />
+            <DetailRow label={tForm('companyType')} value={card.companyType} />
             <DetailRow label={tForm('interestedService')} value={serviceLabel} />
             {card.note && <DetailRow label={tForm('note')} value={card.note} block />}
             <DetailRow label={t('createdAt')} value={dateStr} mono />

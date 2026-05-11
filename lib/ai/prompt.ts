@@ -28,7 +28,27 @@ industry 분류 규칙 (특별히 엄격):
 - 외국어 업종 표현도 위 한국어 분류로 매핑하세요 (예: "Exhibition Design" → "디자인·광고", "Software Engineer @ Samsung" → "IT·소프트웨어", "EdTech" → "교육").
 - industry의 confidence는 추론·검색 결과 강도에 따라 "low"/"mid"/"high"로 정직하게 반환하세요.
 
-좋은 예시 (한+영 이름 분리):
+companyType 분류 규칙 (업종과는 별개의 "조직 유형" 축):
+- companyType은 반드시 다음 13개 중 하나를 그대로 사용하세요:
+  "학교" | "유치원·어린이집" | "학원" | "에듀테크" | "출판사" | "유통사" | "정부기관" | "교육청" | "연구기관" | "대기업" | "스타트업" | "협회·단체" | "기타"
+- 의미 매핑 가이드:
+  · 학교 = 초·중·고·대학교 등 정규 학교 기관
+  · 유치원·어린이집 = 미취학 아동 보육·교육 기관
+  · 학원 = 사교육 학원, 어학원, 코딩학원 등 사설 교육원
+  · 에듀테크 = 교육 기술·솔루션·콘텐츠를 만드는 회사 (예: B2B/B2C edtech 스타트업, LMS, AIDT 공급사)
+  · 출판사 = 교과서·일반 단행본·문제집 등 출판업
+  · 유통사 = 교육 기자재·교구 유통, 도매·총판
+  · 정부기관 = 중앙부처, 산하 공공기관
+  · 교육청 = 시·도교육청, 지역교육지원청
+  · 연구기관 = 교육·정책 관련 연구소, 국책연구원
+  · 대기업 = 일반 대기업·중견기업 (교육과 직접 관련 없는 곳 포함)
+  · 스타트업 = 초기·성장기 스타트업 (에듀테크가 아닌 경우)
+  · 협회·단체 = 산업협회, 비영리단체, 사회적기업
+  · 기타 = 위 어느 것에도 속하지 않을 때만
+- 회사명·도메인·직책으로 단정하기 어려우면 **Google Search로 회사 정보를 조회**해 가장 가까운 유형을 선택하세요. 그래도 모호하면 "기타".
+- 외국어 표현도 위 한국어 분류로 매핑 (예: "Public School" → "학교", "EdTech startup" → "에듀테크", "Publishing House" → "출판사").
+
+좋은 예시 (한+영 이름 분리, 대기업):
 {
   "companyName": "삼성전자",
   "website": "samsung.com",
@@ -38,22 +58,39 @@ industry 분류 규칙 (특별히 엄격):
   "personNameEn": "Gil-dong Hong",
   "position": "이사",
   "industry": "제조",
+  "companyType": "대기업",
   "detectedLanguage": "ko",
-  "confidence": { "companyName": "high", "personName": "high", "personNameEn": "high", "website": "high", "industry": "high" }
+  "confidence": { "companyName": "high", "personName": "high", "personNameEn": "high", "website": "high", "industry": "high", "companyType": "high" }
 }
 
-좋은 예시 (영문 단일 이름):
+좋은 예시 (학교):
 {
-  "companyName": "ACME Industries",
+  "companyName": "서울중앙초등학교",
+  "website": null,
+  "websiteGuessed": false,
+  "country": { "name": "대한민국", "code": "KR" },
+  "personName": "김선생",
+  "personNameEn": null,
+  "position": "교사",
+  "industry": "교육",
+  "companyType": "학교",
+  "detectedLanguage": "ko",
+  "confidence": { "companyName": "high", "personName": "high", "industry": "high", "companyType": "high" }
+}
+
+좋은 예시 (영문 단일 이름, 에듀테크 스타트업):
+{
+  "companyName": "ACME Learning",
   "website": null,
   "websiteGuessed": false,
   "country": null,
   "personName": "John Smith",
   "personNameEn": null,
-  "position": "Manager",
-  "industry": "기타",
+  "position": "Founder",
+  "industry": "교육",
+  "companyType": "에듀테크",
   "detectedLanguage": "en",
-  "confidence": { "companyName": "mid", "personName": "high", "industry": "low" }
+  "confidence": { "companyName": "mid", "personName": "high", "industry": "mid", "companyType": "mid" }
 }
 
 JSON만 출력하세요. 추가 설명 텍스트나 마크다운 코드블록 없이.`;

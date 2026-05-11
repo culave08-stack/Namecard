@@ -59,13 +59,15 @@
     "personNameEn": "담당자명 (영문)",
     "position": "직책",
     "industry": "업종",
+    "companyType": "회사 유형",
     "interestedService": "관심 서비스",
     "interestedServiceOther": "기타 서비스명",
     "note": "노트",
     "aiBadge": "AI",
     "required": "필수 항목입니다",
     "selectService": "서비스를 선택하세요",
-    "selectIndustry": "업종을 선택하세요"
+    "selectIndustry": "업종을 선택하세요",
+    "selectCompanyType": "회사 유형을 선택하세요"
   },
   "service": {
     "kinderboard": "킨더보드",

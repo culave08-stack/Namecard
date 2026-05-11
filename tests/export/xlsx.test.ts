@@ -33,6 +33,7 @@ function makeCard(overrides: Partial<BusinessCard> = {}): BusinessCard {
     personNameEn: 'Kevin Kang',
     position: 'Exhibition Design Manager',
     industry: '디자인·광고',
+    companyType: '대기업',
     interestedService: 'kinderboard',
     aiFilledFields: [],
     ...overrides,
@@ -49,6 +50,7 @@ describe('cardsToRows', () => {
     expect(row.국가).toBe('대한민국 (KR)');
     expect(row.홈페이지).toBe('blog.naver.com/youngasia');
     expect(row.업종).toBe('디자인·광고');
+    expect(row['회사 유형']).toBe('대기업');
     expect(row.관심서비스).toBe('킨더보드');
   });
 

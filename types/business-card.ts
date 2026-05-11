@@ -45,6 +45,26 @@ export const INDUSTRIES = [
 
 export type Industry = (typeof INDUSTRIES)[number];
 
+// 회사 유형 — 조직 카테고리 (업종과는 별개 축)
+// 영업·BD 컨텍스트에서 명함 받은 상대 조직이 어떤 유형인지 분류
+export const COMPANY_TYPES = [
+  '학교',
+  '유치원·어린이집',
+  '학원',
+  '에듀테크',
+  '출판사',
+  '유통사',
+  '정부기관',
+  '교육청',
+  '연구기관',
+  '대기업',
+  '스타트업',
+  '협회·단체',
+  '기타',
+] as const;
+
+export type CompanyType = (typeof COMPANY_TYPES)[number];
+
 export interface Country {
   name: string;
   code: string;
@@ -60,6 +80,7 @@ export interface BusinessCardFields {
   personNameEn?: string;
   position?: string;
   industry?: string;
+  companyType?: string;
   interestedService: InterestedService;
   interestedServiceOther?: string;
   note?: string;
@@ -86,6 +107,7 @@ export type ScanResult = {
   personNameEn: string | null;
   position: string | null;
   industry: string | null;
+  companyType: string | null;
   detectedLanguage: DetectedLanguage | null;
   confidence?: Partial<Record<string, Confidence>>;
 };
