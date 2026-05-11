@@ -2,9 +2,14 @@
   "home": {
     "title": "명함 스캐너",
     "addCard": "+ 명함 추가",
+    "addBatch": "여러 장 한번에",
     "viewAll": "전체 명함 보기",
     "empty": "아직 저장된 명함이 없습니다",
     "lastSaved": "직전 저장 카드"
+  },
+  "batch": {
+    "title": "여러 장 한번에",
+    "howto": "BATCH UPLOAD"
   },
   "list": {
     "title": "저장된 명함",

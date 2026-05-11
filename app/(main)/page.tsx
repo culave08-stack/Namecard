@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Camera, LayoutGrid } from 'lucide-react';
+import { Camera, Images, LayoutGrid } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { LastCardPreview } from '@/components/home/LastCardPreview';
 
@@ -26,6 +26,12 @@ export default function HomePage() {
           title={t('addCard')}
           description="카메라로 촬영 · AI 자동 인식"
           primary
+        />
+        <ActionTile
+          href="/scan/batch"
+          icon={<Images className="size-5" strokeWidth={1.75} />}
+          title={t('addBatch')}
+          description="최대 10장 일괄 분석"
         />
         <ActionTile
           href="/cards"
