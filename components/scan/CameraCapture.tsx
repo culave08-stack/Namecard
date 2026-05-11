@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Camera, ImagePlus, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { normalizeImageOrientation } from '@/lib/image/normalize';
 
 export interface CameraCaptureProps {
   label: string;
@@ -106,10 +107,12 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
     );
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) onCapture(file);
     e.target.value = '';
+    if (!file) return;
+    const oriented = await normalizeImageOrientation(file);
+    onCapture(oriented);
   }
 
   function handleVideoTap() {

@@ -25,6 +25,7 @@ import {
 import { ImagePreview } from '@/components/scan/ImagePreview';
 import { resizeImage } from '@/lib/image/resize';
 import { rotateImage90 } from '@/lib/image/rotate';
+import { normalizeImageOrientation } from '@/lib/image/normalize';
 import { scanResultToFormDefaults, type FormDefaults } from '@/lib/ai/parse';
 import type { ScanResultParsed } from '@/lib/ai/schema';
 import { getCardRepository } from '@/lib/db/supabase-repository';
@@ -176,14 +177,17 @@ export default function BatchScanPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
     if (!files.length) return;
     if (state.items.length + files.length > MAX_BATCH) {
       toast.warning(`최대 ${MAX_BATCH}장까지 가능합니다`);
     }
-    dispatch({ type: 'add-files', blobs: files });
-    e.target.value = '';
+    const oriented = await Promise.all(
+      files.map((f) => normalizeImageOrientation(f))
+    );
+    dispatch({ type: 'add-files', blobs: oriented });
   }
 
   async function analyzeAll() {
