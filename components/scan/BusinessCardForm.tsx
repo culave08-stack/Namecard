@@ -138,7 +138,12 @@ export function BusinessCardForm({
               : undefined
           }
         >
-          <ControlledInput control={control} name="website" type="url" className={lowClass('website')} />
+          <ControlledInput
+            control={control}
+            name="website"
+            placeholder="acme.com"
+            className={lowClass('website')}
+          />
         </Field>
 
         <Field label={t('country')} showAi={showAi('country')}>
