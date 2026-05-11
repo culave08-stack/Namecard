@@ -65,6 +65,7 @@
     "position": "직책",
     "industry": "업종",
     "companyType": "회사 유형",
+    "companyDescription": "회사 소개",
     "phoneCompany": "회사 전화",
     "phoneMobile": "휴대전화",
     "email": "이메일",

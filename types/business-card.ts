@@ -81,6 +81,7 @@ export interface BusinessCardFields {
   position?: string;
   industry?: string;
   companyType?: string;
+  companyDescription?: string;
   phoneCompany?: string;
   phoneMobile?: string;
   email?: string;
@@ -112,6 +113,7 @@ export type ScanResult = {
   position: string | null;
   industry: string | null;
   companyType: string | null;
+  companyDescription: string | null;
   phoneCompany: string | null;
   phoneMobile: string | null;
   email: string | null;

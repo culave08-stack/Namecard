@@ -132,6 +132,7 @@ export default function ScanPage() {
         position: values.position || undefined,
         industry: values.industry || undefined,
         companyType: values.companyType || undefined,
+        companyDescription: values.companyDescription || undefined,
         phoneCompany: values.phoneCompany || undefined,
         phoneMobile: values.phoneMobile || undefined,
         email: values.email || undefined,

@@ -42,6 +42,7 @@ const FormSchema = z.object({
   position: z.string().optional(),
   industry: z.string().optional(),
   companyType: z.string().optional(),
+  companyDescription: z.string().optional(),
   phoneCompany: z.string().optional(),
   phoneMobile: z.string().optional(),
   email: z.string().optional(),
@@ -66,6 +67,7 @@ const FIELD_TO_FORM_KEYS: Record<string, Array<keyof FormValues>> = {
   position: ['position'],
   industry: ['industry'],
   companyType: ['companyType'],
+  companyDescription: ['companyDescription'],
   phoneCompany: ['phoneCompany'],
   phoneMobile: ['phoneMobile'],
   email: ['email'],
@@ -101,6 +103,7 @@ export function BusinessCardForm({
     position: defaults?.position ?? '',
     industry: defaults?.industry ?? '',
     companyType: defaults?.companyType ?? '',
+    companyDescription: defaults?.companyDescription ?? '',
     phoneCompany: defaults?.phoneCompany ?? '',
     phoneMobile: defaults?.phoneMobile ?? '',
     email: defaults?.email ?? '',
@@ -213,6 +216,22 @@ export function BusinessCardForm({
                   ))}
                 </SelectContent>
               </Select>
+            )}
+          />
+        </Field>
+
+        <Field label={t('companyDescription')} showAi={showAi('companyDescription')}>
+          <Controller
+            control={control}
+            name="companyDescription"
+            render={({ field }) => (
+              <Textarea
+                rows={2}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="AI가 검색해 채운 한 줄 소개 (편집 가능)"
+              />
             )}
           />
         </Field>

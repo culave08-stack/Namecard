@@ -53,6 +53,7 @@ export default function CardDetailPage() {
         position: values.position || undefined,
         industry: values.industry || undefined,
         companyType: values.companyType || undefined,
+        companyDescription: values.companyDescription || undefined,
         phoneCompany: values.phoneCompany || undefined,
         phoneMobile: values.phoneMobile || undefined,
         email: values.email || undefined,
@@ -151,6 +152,7 @@ export default function CardDetailPage() {
               position: card.position,
               industry: card.industry,
               companyType: card.companyType,
+              companyDescription: card.companyDescription,
               phoneCompany: card.phoneCompany,
               phoneMobile: card.phoneMobile,
               email: card.email,
@@ -207,6 +209,13 @@ export default function CardDetailPage() {
             />
             <DetailRow label={tForm('industry')} value={card.industry} />
             <DetailRow label={tForm('companyType')} value={card.companyType} />
+            {card.companyDescription && (
+              <DetailRow
+                label={tForm('companyDescription')}
+                value={card.companyDescription}
+                block
+              />
+            )}
             <DetailRow label={tForm('phoneCompany')} value={card.phoneCompany} mono />
             <DetailRow label={tForm('phoneMobile')} value={card.phoneMobile} mono />
             <DetailRow label={tForm('email')} value={card.email} mono />

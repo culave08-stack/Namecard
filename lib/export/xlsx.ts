@@ -19,6 +19,7 @@ interface Row {
   홈페이지: string;
   업종: string;
   '회사 유형': string;
+  '회사 소개': string;
   관심서비스: string;
   '관심서비스(기타)': string;
   노트: string;
@@ -38,6 +39,7 @@ const HEADERS: ReadonlyArray<keyof Row> = [
   '홈페이지',
   '업종',
   '회사 유형',
+  '회사 소개',
   '관심서비스',
   '관심서비스(기타)',
   '노트',
@@ -70,6 +72,7 @@ export function cardsToRows(cards: BusinessCard[], labels: XlsxColumns): Row[] {
     홈페이지: c.website ?? '',
     업종: c.industry ?? '',
     '회사 유형': c.companyType ?? '',
+    '회사 소개': c.companyDescription ?? '',
     관심서비스: labels.service[c.interestedService] ?? c.interestedService,
     '관심서비스(기타)': c.interestedServiceOther ?? '',
     노트: c.note ?? '',

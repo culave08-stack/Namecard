@@ -34,6 +34,7 @@ interface CardRow {
   position: string | null;
   industry: string | null;
   company_type: string | null;
+  company_description: string | null;
   phone_company: string | null;
   phone_mobile: string | null;
   email: string | null;
@@ -91,6 +92,7 @@ export class SupabaseCardRepository implements CardRepository {
       position: row.position ?? undefined,
       industry: row.industry ?? undefined,
       companyType: row.company_type ?? undefined,
+      companyDescription: row.company_description ?? undefined,
       phoneCompany: row.phone_company ?? undefined,
       phoneMobile: row.phone_mobile ?? undefined,
       email: row.email ?? undefined,
@@ -139,6 +141,7 @@ export class SupabaseCardRepository implements CardRepository {
         position: card.position ?? null,
         industry: card.industry ?? null,
         company_type: card.companyType ?? null,
+        company_description: card.companyDescription ?? null,
         phone_company: card.phoneCompany ?? null,
         phone_mobile: card.phoneMobile ?? null,
         email: card.email ?? null,
@@ -210,6 +213,7 @@ export class SupabaseCardRepository implements CardRepository {
     if (patch.position !== undefined) row.position = patch.position ?? null;
     if (patch.industry !== undefined) row.industry = patch.industry ?? null;
     if (patch.companyType !== undefined) row.company_type = patch.companyType ?? null;
+    if (patch.companyDescription !== undefined) row.company_description = patch.companyDescription ?? null;
     if (patch.phoneCompany !== undefined) row.phone_company = patch.phoneCompany ?? null;
     if (patch.phoneMobile !== undefined) row.phone_mobile = patch.phoneMobile ?? null;
     if (patch.email !== undefined) row.email = patch.email ?? null;

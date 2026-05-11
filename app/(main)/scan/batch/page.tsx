@@ -264,6 +264,7 @@ export default function BatchScanPage() {
           position: it.ai?.position || undefined,
           industry: it.ai?.industry || undefined,
           companyType: it.ai?.companyType || undefined,
+          companyDescription: it.ai?.companyDescription || undefined,
           phoneCompany: it.ai?.phoneCompany || undefined,
           phoneMobile: it.ai?.phoneMobile || undefined,
           email: it.ai?.email || undefined,

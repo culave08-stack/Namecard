@@ -46,6 +46,7 @@ export type FormDefaults = Pick<
   | 'position'
   | 'industry'
   | 'companyType'
+  | 'companyDescription'
   | 'phoneCompany'
   | 'phoneMobile'
   | 'email'
@@ -352,6 +353,7 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
   const position = cleanString(parsed.position);
   const industry = normalizeIndustry(parsed.industry);
   const companyType = normalizeCompanyType(parsed.companyType);
+  const companyDescription = cleanString(parsed.companyDescription);
   const phoneCompany = cleanString(parsed.phoneCompany);
   const phoneMobile = cleanString(parsed.phoneMobile);
   const email = cleanString(parsed.email);
@@ -366,6 +368,7 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
   if (position) aiFilledFields.push('position');
   if (industry) aiFilledFields.push('industry');
   if (companyType) aiFilledFields.push('companyType');
+  if (companyDescription) aiFilledFields.push('companyDescription');
   if (phoneCompany) aiFilledFields.push('phoneCompany');
   if (phoneMobile) aiFilledFields.push('phoneMobile');
   if (email) aiFilledFields.push('email');
@@ -381,6 +384,7 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
     position,
     industry,
     companyType,
+    companyDescription,
     phoneCompany,
     phoneMobile,
     email,
