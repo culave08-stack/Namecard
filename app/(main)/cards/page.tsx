@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { ArrowLeft, FileSpreadsheet, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import {
@@ -71,20 +72,28 @@ export default function CardsListPage() {
   }, [cards, query, serviceFilter, countryFilter, sortDir]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
-          {t('back')}
+    <div className="flex flex-col gap-6">
+      <header className="flex items-center justify-between gap-3">
+        <Link
+          href="/"
+          aria-label={t('back')}
+          className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" strokeWidth={1.75} />
         </Link>
-        <h1 className="text-xl font-semibold">{t('title')}</h1>
-        <div className="w-12" />
-      </div>
+        <h1 className="text-base font-semibold tracking-tight">{t('title')}</h1>
+        <div className="w-9" />
+      </header>
 
-      <Input
-        placeholder={t('search')}
-        value={query}
-        onChange={(e) => setQuery(e.currentTarget.value)}
-      />
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.75} />
+        <Input
+          placeholder={t('search')}
+          value={query}
+          onChange={(e) => setQuery(e.currentTarget.value)}
+          className="h-11 pl-9"
+        />
+      </div>
 
       <div className="grid grid-cols-3 gap-2">
         <FilterSelect
@@ -127,8 +136,8 @@ export default function CardsListPage() {
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">
+          <div className="flex items-center justify-between border-t border-border/60 pt-3">
+            <p className="text-xs text-muted-foreground tabular">
               {t('count', { n: filtered.length })}
             </p>
             <Button
@@ -148,14 +157,20 @@ export default function CardsListPage() {
                   },
                 });
               }}
+              className="gap-1.5"
             >
+              <FileSpreadsheet className="size-3.5" strokeWidth={1.75} />
               {tExport('xlsx')}
             </Button>
           </div>
+
           {filtered.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">{t('empty')}</p>
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border/80 bg-muted/30 py-16 text-center">
+              <Search className="size-7 text-muted-foreground" strokeWidth={1.5} />
+              <p className="text-sm text-muted-foreground">{t('empty')}</p>
+            </div>
           ) : (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2.5">
               {filtered.map((c) => (
                 <CardListItem key={c.id} card={c} />
               ))}
@@ -185,7 +200,7 @@ function FilterSelect({
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v ?? '')}>
-      <SelectTrigger aria-label={ariaLabel}>
+      <SelectTrigger aria-label={ariaLabel} className="h-10">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -200,5 +215,5 @@ function FilterSelect({
 }
 
 function Skeleton() {
-  return <div className="h-20 animate-pulse rounded-lg bg-muted" />;
+  return <div className="h-24 animate-pulse rounded-xl bg-muted" />;
 }

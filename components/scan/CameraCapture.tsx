@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Camera, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -99,11 +100,13 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-sm font-medium">{label}</p>
+    <div className="flex flex-col gap-4">
+      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
 
       {mode === 'live' && (
-        <div className="relative aspect-[86/54] w-full overflow-hidden rounded-lg bg-black">
+        <div className="relative aspect-card w-full overflow-hidden rounded-xl bg-zinc-950 shadow-card">
           <video
             ref={handleVideoRef}
             onClick={handleVideoTap}
@@ -112,17 +115,23 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
             muted
             autoPlay
           />
-          <div className="pointer-events-none absolute inset-4 rounded-md border-2 border-dashed border-white/80" />
-          <p className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
+          {/* 명함 가이드 — 모서리 크로스헤어 */}
+          <CornerGuides />
+          <p className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-[11px] text-white backdrop-blur-sm">
             {t('guideHint')}
           </p>
         </div>
       )}
 
       {mode === 'live' && (
-        <Button onClick={captureFromVideo} type="button">
-          📸
-        </Button>
+        <button
+          onClick={captureFromVideo}
+          type="button"
+          aria-label="촬영"
+          className="group mx-auto inline-flex size-14 items-center justify-center rounded-full bg-foreground p-1 shadow-card transition-transform active:scale-95"
+        >
+          <span className="block size-full rounded-full border-[3px] border-background bg-foreground transition-colors group-hover:bg-primary" />
+        </button>
       )}
 
       {mode === 'fallback' && (
@@ -135,13 +144,38 @@ export function CameraCapture({ label, onCapture }: CameraCaptureProps) {
             className="hidden"
             onChange={handleFileChange}
           />
-          <Button onClick={() => fileInputRef.current?.click()} type="button">
-            파일 선택 / 촬영
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            type="button"
+            size="lg"
+            className="h-12 gap-2"
+          >
+            <Upload className="size-4" strokeWidth={1.75} />
+            파일에서 선택 / 촬영
           </Button>
         </>
       )}
 
-      {mode === 'init' && <p className="text-sm text-muted-foreground">카메라 준비 중...</p>}
+      {mode === 'init' && (
+        <div className="flex aspect-card w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/30">
+          <Camera className="size-6 text-muted-foreground" strokeWidth={1.5} />
+          <p className="text-xs text-muted-foreground">카메라 준비 중…</p>
+        </div>
+      )}
     </div>
+  );
+}
+
+function CornerGuides() {
+  // 각 모서리에 위치한 작은 L자 가이드라인
+  const base =
+    'pointer-events-none absolute size-7 border-white/85';
+  return (
+    <>
+      <span className={`${base} left-3 top-3 border-l-2 border-t-2 rounded-tl`} />
+      <span className={`${base} right-3 top-3 border-r-2 border-t-2 rounded-tr`} />
+      <span className={`${base} left-3 bottom-3 border-l-2 border-b-2 rounded-bl`} />
+      <span className={`${base} right-3 bottom-3 border-r-2 border-b-2 rounded-br`} />
+    </>
   );
 }

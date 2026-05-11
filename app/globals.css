@@ -1,51 +1,77 @@
+/* Pretendard Variable — 한글·영문 균형 잡힌 가변 폰트 */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* 따뜻한 크림 베이스 + 딥 잉크 블루 액센트 */
+    --background: 40 30% 97%;
+    --foreground: 220 18% 12%;
+
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 220 18% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
+    --popover-foreground: 220 18% 12%;
+
+    --primary: 211 55% 25%;          /* 딥 잉크 블루 */
+    --primary-foreground: 40 30% 97%;
+
+    --secondary: 38 25% 93%;
+    --secondary-foreground: 220 18% 18%;
+    --muted: 38 22% 94%;
+    --muted-foreground: 220 9% 42%;
+    --accent: 38 28% 91%;
+    --accent-foreground: 220 18% 18%;
+
+    --destructive: 4 70% 48%;
+    --destructive-foreground: 40 30% 97%;
+
+    --border: 36 22% 88%;
+    --input: 36 22% 88%;
+    --ring: 211 55% 35%;
+
+    --radius: 0.625rem;
+
+    /* 부드러운 카드 그림자 — 종이 한 장 들린 정도 */
+    --shadow-card: 0 1px 2px hsl(220 18% 12% / 0.04),
+                   0 2px 8px hsl(220 18% 12% / 0.04);
+    --shadow-card-hover: 0 2px 4px hsl(220 18% 12% / 0.06),
+                         0 8px 24px hsl(220 18% 12% / 0.08);
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --background: 220 18% 7%;
+    --foreground: 40 14% 90%;
+
+    --card: 220 16% 10%;
+    --card-foreground: 40 14% 90%;
+    --popover: 220 16% 10%;
+    --popover-foreground: 40 14% 90%;
+
+    --primary: 211 60% 75%;
+    --primary-foreground: 220 18% 7%;
+
+    --secondary: 220 13% 15%;
+    --secondary-foreground: 40 14% 90%;
+    --muted: 220 13% 14%;
+    --muted-foreground: 220 8% 60%;
+    --accent: 220 14% 16%;
+    --accent-foreground: 40 14% 90%;
+
+    --destructive: 4 65% 55%;
+    --destructive-foreground: 40 14% 90%;
+
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 211 60% 65%;
+
+    --shadow-card: 0 1px 2px hsl(0 0% 0% / 0.2),
+                   0 2px 8px hsl(0 0% 0% / 0.25);
+    --shadow-card-hover: 0 2px 4px hsl(0 0% 0% / 0.3),
+                         0 8px 24px hsl(0 0% 0% / 0.4);
   }
 }
 
@@ -53,14 +79,57 @@
   * {
     @apply border-border;
   }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
     @apply bg-background text-foreground;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+      system-ui, Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', 'Noto Sans KR',
+      'Malgun Gothic', sans-serif;
+    font-feature-settings: 'ss06', 'ss07', 'kern', 'calt';
+    letter-spacing: -0.005em;
+  }
+
+  /* 헤딩은 조금 더 좁은 트래킹으로 단정하게 */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+
+  /* 숫자는 표용 등폭으로 — 날짜·건수 정렬이 깔끔해짐 */
+  .tabular,
+  time,
+  [data-tabular] {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-card-hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* 86×54 명함 비율 — 실물 명함의 정확한 비율 */
+  .aspect-card {
+    aspect-ratio: 86 / 54;
+  }
+
+  /* 부드러운 lift on hover — 명함이 살짝 들리는 느낌 */
+  .lift {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  .lift:hover {
+    transform: translateY(-1px);
   }
 }

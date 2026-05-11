@@ -1,5 +1,6 @@
 'use client';
 
+import { WifiOff } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useOnline } from '@/lib/hooks/useOnline';
 
@@ -8,8 +9,9 @@ export function OfflineBanner() {
   const online = useOnline();
   if (online) return null;
   return (
-    <div className="sticky top-0 z-50 -mx-4 -mt-6 mb-2 bg-amber-100 px-4 py-2 text-center text-xs font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200">
-      {t('banner')}
+    <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-200/70 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-200">
+      <WifiOff className="size-3.5 shrink-0" strokeWidth={1.75} />
+      <span className="leading-snug">{t('banner')}</span>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SignOutButton } from '@/components/auth/SignOutButton';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { Brand } from '@/components/brand/Brand';
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const supabase = createSupabaseServerClient();
@@ -11,13 +12,19 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   return (
     <>
       {user && (
-        <div className="mb-4 flex items-center justify-between text-xs text-muted-foreground">
-          <span className="truncate">{user.email}</span>
-          <div className="flex items-center gap-3">
+        <header className="mb-8 flex items-center justify-between border-b border-border/60 pb-4">
+          <Brand size="md" />
+          <div className="flex items-center gap-4">
+            <span
+              className="hidden text-xs text-muted-foreground sm:inline tabular"
+              title={user.email ?? undefined}
+            >
+              {user.email}
+            </span>
             <ThemeToggle />
             <SignOutButton />
           </div>
-        </div>
+        </header>
       )}
       {children}
     </>

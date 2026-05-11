@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Brand } from '@/components/brand/Brand';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export default function LoginPage() {
@@ -58,56 +59,79 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">
-        {mode === 'login' ? t('loginTitle') : t('signupTitle')}
-      </h1>
+    <div className="flex min-h-[calc(100dvh-3rem)] flex-col">
+      <header className="pb-12 pt-4">
+        <Brand size="md" asLink={false} />
+      </header>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-sm" htmlFor="email">
-            {t('email')}
-          </Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.currentTarget.value)}
-          />
+      <div className="flex-1">
+        <div className="space-y-2 pb-8">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            {mode === 'login' ? t('loginTitle') : t('signupTitle')}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {mode === 'login'
+              ? '저장한 명함을 다시 만나러 가요.'
+              : '오늘 받은 명함부터 차곡차곡 모아두세요.'}
+          </p>
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-sm" htmlFor="password">
-            {t('password')}
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.currentTarget.value)}
-          />
-          {mode === 'signup' && (
-            <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>
-          )}
-        </div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <Label
+              className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+              htmlFor="email"
+            >
+              {t('email')}
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.currentTarget.value)}
+              className="h-11"
+            />
+          </div>
 
-        <Button type="submit" disabled={submitting} size="lg">
-          {submitting ? '...' : mode === 'login' ? t('login') : t('signup')}
-        </Button>
-      </form>
+          <div className="flex flex-col gap-2">
+            <Label
+              className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+              htmlFor="password"
+            >
+              {t('password')}
+            </Label>
+            <Input
+              id="password"
+              type="password"
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
+              className="h-11"
+            />
+            {mode === 'signup' && (
+              <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>
+            )}
+          </div>
 
-      <Button
-        type="button"
-        variant="ghost"
-        onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-      >
-        {mode === 'login' ? t('toSignup') : t('toLogin')}
-      </Button>
+          <Button type="submit" disabled={submitting} size="lg" className="mt-2 h-11">
+            {submitting ? '...' : mode === 'login' ? t('login') : t('signup')}
+          </Button>
+        </form>
+      </div>
+
+      <footer className="border-t border-border/60 pt-6 text-center">
+        <button
+          type="button"
+          onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {mode === 'login' ? t('toSignup') : t('toLogin')}
+        </button>
+      </footer>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ export default function CardDetailPage() {
   const t = useTranslations('detail');
   const tList = useTranslations('list');
   const tService = useTranslations('service');
+  const tForm = useTranslations('form');
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const id = params.id;
@@ -71,19 +73,23 @@ export default function CardDetailPage() {
 
   if (card === undefined) {
     return (
-      <div className="flex flex-col gap-3">
-        <div className="h-12 animate-pulse rounded bg-muted" />
-        <div className="h-40 animate-pulse rounded bg-muted" />
-        <div className="h-24 animate-pulse rounded bg-muted" />
+      <div className="flex flex-col gap-4">
+        <div className="h-9 w-9 animate-pulse rounded-md bg-muted" />
+        <div className="aspect-card w-full animate-pulse rounded-xl bg-muted" />
+        <div className="h-32 animate-pulse rounded-xl bg-muted" />
       </div>
     );
   }
 
   if (card === null) {
     return (
-      <div className="flex flex-col gap-3">
-        <Link href="/cards" className="text-sm text-muted-foreground hover:text-foreground">
-          {tList('back')}
+      <div className="flex flex-col gap-4">
+        <Link
+          href="/cards"
+          aria-label={tList('back')}
+          className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" strokeWidth={1.75} />
         </Link>
         <p className="py-12 text-center text-sm text-muted-foreground">{t('notFound')}</p>
       </div>
@@ -91,31 +97,44 @@ export default function CardDetailPage() {
   }
 
   const created = new Date(card.createdAt);
-  const dateStr = `${created.getFullYear()}-${pad(created.getMonth() + 1)}-${pad(created.getDate())}`;
+  const dateStr = `${created.getFullYear()}.${pad(created.getMonth() + 1)}.${pad(created.getDate())}`;
+
+  const serviceLabel =
+    card.interestedService === 'other' && card.interestedServiceOther
+      ? card.interestedServiceOther
+      : tService(card.interestedService);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Link href="/cards" className="text-sm text-muted-foreground hover:text-foreground">
-          {tList('back')}
+    <div className="flex flex-col gap-6">
+      <header className="flex items-center justify-between gap-3">
+        <Link
+          href="/cards"
+          aria-label={tList('back')}
+          className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" strokeWidth={1.75} />
         </Link>
-        <h1 className="text-xl font-semibold">{t('title')}</h1>
-        <div className="w-12" />
-      </div>
+        <h1 className="text-base font-semibold tracking-tight">{t('title')}</h1>
+        <div className="w-9" />
+      </header>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium text-muted-foreground">{t('frontImage')}</p>
-        <ImagePreview src={card.frontImageUrl} alt={card.companyName} />
+      <section className="space-y-3">
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+          <div className="aspect-card w-full bg-muted">
+            <ImagePreview src={card.frontImageUrl} alt={card.companyName} />
+          </div>
+        </div>
         {card.backImageUrl && (
-          <>
-            <p className="text-xs font-medium text-muted-foreground">{t('backImage')}</p>
-            <ImagePreview src={card.backImageUrl} alt={`${card.companyName} (back)`} />
-          </>
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+            <div className="aspect-card w-full bg-muted">
+              <ImagePreview src={card.backImageUrl} alt={`${card.companyName} (back)`} />
+            </div>
+          </div>
         )}
-      </div>
+      </section>
 
       {editing ? (
-        <>
+        <section className="space-y-4">
           <BusinessCardForm
             defaults={{
               companyName: card.companyName,
@@ -142,35 +161,79 @@ export default function CardDetailPage() {
           <Button variant="outline" onClick={() => setEditing(false)} disabled={submitting}>
             {t('cancel')}
           </Button>
-        </>
+        </section>
       ) : (
         <>
-          <CardReadonlyView card={card} dateStr={dateStr} serviceLabel={
-            card.interestedService === 'other' && card.interestedServiceOther
-              ? card.interestedServiceOther
-              : tService(card.interestedService)
-          } />
-          <div className="flex gap-2">
-            <Button onClick={() => setEditing(true)} className="flex-1">
+          <section className="space-y-2">
+            <p className="text-2xl font-semibold tracking-tight text-foreground">
+              {card.companyName}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              <span className="text-foreground">{card.personName}</span>
+              {card.personNameEn && (
+                <span className="text-muted-foreground/70"> · {card.personNameEn}</span>
+              )}
+              {card.position ? <span> · {card.position}</span> : null}
+            </p>
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              {card.country?.name && <Tag>{card.country.name}</Tag>}
+              {card.industry && <Tag>{card.industry}</Tag>}
+              <Tag accent>{serviceLabel}</Tag>
+            </div>
+          </section>
+
+          <section className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-card">
+            <DetailRow label={tForm('website')} value={card.website} mono />
+            <DetailRow
+              label={tForm('country')}
+              value={
+                card.country ? `${card.country.name} (${card.country.code})` : undefined
+              }
+            />
+            <DetailRow label={tForm('industry')} value={card.industry} />
+            <DetailRow label={tForm('interestedService')} value={serviceLabel} />
+            {card.note && <DetailRow label={tForm('note')} value={card.note} block />}
+            <DetailRow label={t('createdAt')} value={dateStr} mono />
+          </section>
+
+          <div className="flex gap-2 pt-2">
+            <Button onClick={() => setEditing(true)} className="flex-1 gap-1.5" size="lg">
+              <Pencil className="size-4" strokeWidth={1.75} />
               {t('edit')}
             </Button>
             {confirmingDelete ? (
               <>
-                <Button variant="outline" onClick={() => setConfirmingDelete(false)} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={() => setConfirmingDelete(false)}
+                  className="flex-1"
+                  size="lg"
+                >
                   {t('cancel')}
                 </Button>
-                <Button variant="destructive" onClick={handleDelete} className="flex-1">
+                <Button
+                  variant="destructive"
+                  onClick={handleDelete}
+                  className="flex-1"
+                  size="lg"
+                >
                   {t('deleteConfirm')}
                 </Button>
               </>
             ) : (
-              <Button variant="destructive" onClick={() => setConfirmingDelete(true)} className="flex-1">
+              <Button
+                variant="destructive"
+                onClick={() => setConfirmingDelete(true)}
+                className="flex-1 gap-1.5"
+                size="lg"
+              >
+                <Trash2 className="size-4" strokeWidth={1.75} />
                 {t('delete')}
               </Button>
             )}
           </div>
           {confirmingDelete && (
-            <p className="text-xs text-destructive">{t('deleteConfirmDesc')}</p>
+            <p className="text-center text-xs text-destructive">{t('deleteConfirmDesc')}</p>
           )}
         </>
       )}
@@ -182,38 +245,45 @@ function pad(n: number): string {
   return n.toString().padStart(2, '0');
 }
 
-function CardReadonlyView({
-  card,
-  dateStr,
-  serviceLabel,
+function DetailRow({
+  label,
+  value,
+  mono = false,
+  block = false,
 }: {
-  card: BusinessCard;
-  dateStr: string;
-  serviceLabel: string;
+  label: string;
+  value?: string;
+  mono?: boolean;
+  block?: boolean;
 }) {
-  const t = useTranslations('form');
-  const tDetail = useTranslations('detail');
+  if (!value) return null;
   return (
-    <dl className="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
-      <Row label={t('companyName')} value={card.companyName} />
-      <Row label={t('website')} value={card.website} />
-      <Row label={t('country')} value={card.country ? `${card.country.name} (${card.country.code})` : undefined} />
-      <Row label={t('personName')} value={card.personName} />
-      {card.personNameEn && <Row label={t('personNameEn')} value={card.personNameEn} />}
-      <Row label={t('position')} value={card.position} />
-      <Row label={t('industry')} value={card.industry} />
-      <Row label={t('interestedService')} value={serviceLabel} />
-      <Row label={t('note')} value={card.note} />
-      <Row label={tDetail('createdAt')} value={dateStr} />
-    </dl>
+    <div
+      className={`flex ${block ? 'flex-col gap-1' : 'items-baseline justify-between gap-3'} text-sm`}
+    >
+      <span className="shrink-0 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
+      <span
+        className={`min-w-0 break-words text-right text-foreground ${mono ? 'tabular' : ''} ${
+          block ? 'whitespace-pre-wrap text-left' : ''
+        }`}
+      >
+        {value}
+      </span>
+    </div>
   );
 }
 
-function Row({ label, value }: { label: string; value?: string }) {
+function Tag({ children, accent = false }: { children: React.ReactNode; accent?: boolean }) {
+  const cls = accent
+    ? 'bg-primary/10 text-primary'
+    : 'bg-muted text-muted-foreground';
   return (
-    <>
-      <dt className="col-span-1 text-muted-foreground">{label}</dt>
-      <dd className="col-span-2 break-words">{value || '—'}</dd>
-    </>
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-1 text-[11px] font-medium tracking-tight ${cls}`}
+    >
+      {children}
+    </span>
   );
 }

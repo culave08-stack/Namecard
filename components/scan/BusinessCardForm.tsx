@@ -119,123 +119,141 @@ export function BusinessCardForm({
   const interestedService = watch('interestedService');
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <Field
-        label={t('companyName')}
-        showAi={showAi('companyName')}
-        error={errors.companyName ? t('required') : undefined}
-      >
-        <ControlledInput control={control} name="companyName" className={lowClass('companyName')} />
-      </Field>
-
-      <Field
-        label={t('website')}
-        showAi={showAi('website')}
-        hint={
-          defaults?.websiteGuessed && websiteValue === defaults.website
-            ? `⚠️ ${t('websiteGuessed')}`
-            : undefined
-        }
-      >
-        <ControlledInput control={control} name="website" type="url" className={lowClass('website')} />
-      </Field>
-
-      <Field label={t('country')} showAi={showAi('country')}>
-        <div className="flex gap-2">
-          <ControlledInput control={control} name="countryName" placeholder="국가명" className="flex-1" />
-          <ControlledInput control={control} name="countryCode" placeholder="ISO" maxLength={2} className="w-20" />
-        </div>
-      </Field>
-
-      <Field
-        label={t('personName')}
-        showAi={showAi('personName')}
-        error={errors.personName ? t('required') : undefined}
-      >
-        <ControlledInput control={control} name="personName" className={lowClass('personName')} />
-      </Field>
-
-      <Field label={t('personNameEn')} showAi={showAi('personNameEn')}>
-        <ControlledInput control={control} name="personNameEn" className={lowClass('personNameEn')} />
-      </Field>
-
-      <Field label={t('position')} showAi={showAi('position')}>
-        <ControlledInput control={control} name="position" className={lowClass('position')} />
-      </Field>
-
-      <Field label={t('industry')} showAi={showAi('industry')}>
-        <Controller
-          control={control}
-          name="industry"
-          render={({ field }) => (
-            <Select
-              onValueChange={(v) => field.onChange(v ?? '')}
-              value={field.value ?? ''}
-            >
-              <SelectTrigger className={lowClass('industry')}>
-                <SelectValue placeholder={t('selectIndustry')} />
-              </SelectTrigger>
-              <SelectContent>
-                {INDUSTRIES.map((label) => (
-                  <SelectItem key={label} value={label}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </Field>
-
-      <Field
-        label={t('interestedService')}
-        error={errors.interestedService ? t('selectService') : undefined}
-      >
-        <Controller
-          control={control}
-          name="interestedService"
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value ?? ''}>
-              <SelectTrigger>
-                <SelectValue placeholder={t('selectService')} />
-              </SelectTrigger>
-              <SelectContent>
-                {INTERESTED_SERVICES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {tService(s)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </Field>
-
-      {interestedService === 'other' && (
-        <Field label={t('interestedServiceOther')}>
-          <ControlledInput control={control} name="interestedServiceOther" />
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+      <Section title="회사">
+        <Field
+          label={t('companyName')}
+          showAi={showAi('companyName')}
+          error={errors.companyName ? t('required') : undefined}
+        >
+          <ControlledInput control={control} name="companyName" className={lowClass('companyName')} />
         </Field>
-      )}
 
-      <Field label={t('note')}>
-        <Controller
-          control={control}
-          name="note"
-          render={({ field }) => (
-            <Textarea
-              rows={3}
-              value={field.value ?? ''}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-            />
-          )}
-        />
-      </Field>
+        <Field
+          label={t('website')}
+          showAi={showAi('website')}
+          hint={
+            defaults?.websiteGuessed && websiteValue === defaults.website
+              ? `추정값 · 명함에 명시되지 않음`
+              : undefined
+          }
+        >
+          <ControlledInput control={control} name="website" type="url" className={lowClass('website')} />
+        </Field>
 
-      <Button type="submit" disabled={submitting}>
-        {submitting ? '...' : (submitLabel ?? '저장')}
+        <Field label={t('country')} showAi={showAi('country')}>
+          <div className="flex gap-2">
+            <ControlledInput control={control} name="countryName" placeholder="국가명" className="flex-1" />
+            <ControlledInput control={control} name="countryCode" placeholder="ISO" maxLength={2} className="w-20 text-center uppercase tabular" />
+          </div>
+        </Field>
+
+        <Field label={t('industry')} showAi={showAi('industry')}>
+          <Controller
+            control={control}
+            name="industry"
+            render={({ field }) => (
+              <Select
+                onValueChange={(v) => field.onChange(v ?? '')}
+                value={field.value ?? ''}
+              >
+                <SelectTrigger className={`h-11 ${lowClass('industry')}`}>
+                  <SelectValue placeholder={t('selectIndustry')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {INDUSTRIES.map((label) => (
+                    <SelectItem key={label} value={label}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+      </Section>
+
+      <Section title="담당자">
+        <Field
+          label={t('personName')}
+          showAi={showAi('personName')}
+          error={errors.personName ? t('required') : undefined}
+        >
+          <ControlledInput control={control} name="personName" className={lowClass('personName')} />
+        </Field>
+
+        <Field label={t('personNameEn')} showAi={showAi('personNameEn')}>
+          <ControlledInput control={control} name="personNameEn" className={lowClass('personNameEn')} />
+        </Field>
+
+        <Field label={t('position')} showAi={showAi('position')}>
+          <ControlledInput control={control} name="position" className={lowClass('position')} />
+        </Field>
+      </Section>
+
+      <Section title="분류">
+        <Field
+          label={t('interestedService')}
+          error={errors.interestedService ? t('selectService') : undefined}
+        >
+          <Controller
+            control={control}
+            name="interestedService"
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder={t('selectService')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {INTERESTED_SERVICES.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {tService(s)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+
+        {interestedService === 'other' && (
+          <Field label={t('interestedServiceOther')}>
+            <ControlledInput control={control} name="interestedServiceOther" />
+          </Field>
+        )}
+
+        <Field label={t('note')}>
+          <Controller
+            control={control}
+            name="note"
+            render={({ field }) => (
+              <Textarea
+                rows={3}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="만난 자리, 화제, 후속 액션 등"
+              />
+            )}
+          />
+        </Field>
+      </Section>
+
+      <Button type="submit" disabled={submitting} size="lg" className="h-12">
+        {submitting ? '저장 중…' : (submitLabel ?? '저장')}
       </Button>
     </form>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <fieldset className="flex flex-col gap-4">
+      <legend className="mb-1 text-[11px] font-medium uppercase tracking-[0.18em] text-primary/70">
+        {title}
+      </legend>
+      {children}
+    </fieldset>
   );
 }
 
@@ -258,7 +276,7 @@ function ControlledInput({ control, name, className, type, placeholder, maxLengt
           type={type}
           placeholder={placeholder}
           maxLength={maxLength}
-          className={className}
+          className={`h-11 ${className ?? ''}`.trim()}
           value={typeof field.value === 'string' ? field.value : (field.value ?? '') as string}
           onChange={(e) => field.onChange(e.currentTarget.value)}
           onBlur={field.onBlur}
@@ -284,14 +302,14 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label className="text-sm">
+    <div className="flex flex-col gap-2">
+      <Label className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
         {label}
         {showAi && <AiBadge />}
       </Label>
       {children}
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {hint && <p className="text-[11px] text-muted-foreground">{hint}</p>}
+      {error && <p className="text-[11px] text-destructive">{error}</p>}
     </div>
   );
 }

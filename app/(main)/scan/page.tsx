@@ -2,6 +2,8 @@
 
 import { useReducer, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -135,7 +137,17 @@ export default function ScanPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-semibold">{t(`step.${state.step}`)}</h1>
+      <header className="flex items-center justify-between gap-3">
+        <Link
+          href="/"
+          aria-label="뒤로"
+          className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" strokeWidth={1.75} />
+        </Link>
+        <h1 className="text-base font-semibold tracking-tight">{t(`step.${state.step}`)}</h1>
+        <div className="w-9" />
+      </header>
 
       {state.step === 'camera' && (
         <CameraCapture
@@ -145,21 +157,34 @@ export default function ScanPage() {
       )}
 
       {state.step === 'preview' && state.front && (
-        <div className="flex flex-col gap-3">
-          <ImagePreview src={state.front} alt="앞면" />
+        <div className="flex flex-col gap-4">
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+            <div className="aspect-card w-full bg-muted">
+              <ImagePreview src={state.front} alt="앞면" />
+            </div>
+          </div>
           {state.back ? (
-            <ImagePreview src={state.back} alt="뒷면" />
+            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+              <div className="aspect-card w-full bg-muted">
+                <ImagePreview src={state.back} alt="뒷면" />
+              </div>
+            </div>
           ) : (
             <CameraCapture
               label={t('addBack')}
               onCapture={(blob) => dispatch({ type: 'capture-back', blob })}
             />
           )}
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => dispatch({ type: 'retake' })} className="flex-1">
+          <div className="flex gap-2 pt-1">
+            <Button
+              variant="outline"
+              onClick={() => dispatch({ type: 'retake' })}
+              size="lg"
+              className="flex-1"
+            >
               {t('retake')}
             </Button>
-            <Button onClick={analyze} className="flex-1">
+            <Button onClick={analyze} size="lg" className="flex-1">
               {t('analyze')}
             </Button>
           </div>

@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react';
 export interface ImagePreviewProps {
   src: Blob | string;
   alt: string;
+  className?: string;
 }
 
-export function ImagePreview({ src, alt }: ImagePreviewProps) {
+export function ImagePreview({ src, alt, className }: ImagePreviewProps) {
   const [url, setUrl] = useState<string>('');
 
   useEffect(() => {
@@ -25,7 +26,8 @@ export function ImagePreview({ src, alt }: ImagePreviewProps) {
     <img
       src={url}
       alt={alt}
-      className="aspect-[86/54] w-full rounded-lg object-cover"
+      className={className ?? 'h-full w-full object-cover'}
+      loading="lazy"
     />
   );
 }
