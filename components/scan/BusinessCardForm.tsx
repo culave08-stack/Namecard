@@ -42,6 +42,10 @@ const FormSchema = z.object({
   position: z.string().optional(),
   industry: z.string().optional(),
   companyType: z.string().optional(),
+  phoneCompany: z.string().optional(),
+  phoneMobile: z.string().optional(),
+  email: z.string().optional(),
+  fax: z.string().optional(),
   interestedService: z.enum(
     ['kinderboard', 'lumitiq', 'artbongbong', 'turuturu', 'aidt', 'other'],
     { message: '서비스를 선택하세요' }
@@ -62,6 +66,10 @@ const FIELD_TO_FORM_KEYS: Record<string, Array<keyof FormValues>> = {
   position: ['position'],
   industry: ['industry'],
   companyType: ['companyType'],
+  phoneCompany: ['phoneCompany'],
+  phoneMobile: ['phoneMobile'],
+  email: ['email'],
+  fax: ['fax'],
 };
 
 export interface BusinessCardFormProps {
@@ -93,6 +101,10 @@ export function BusinessCardForm({
     position: defaults?.position ?? '',
     industry: defaults?.industry ?? '',
     companyType: defaults?.companyType ?? '',
+    phoneCompany: defaults?.phoneCompany ?? '',
+    phoneMobile: defaults?.phoneMobile ?? '',
+    email: defaults?.email ?? '',
+    fax: defaults?.fax ?? '',
     interestedService: initialUserFields?.interestedService,
     interestedServiceOther: initialUserFields?.interestedServiceOther ?? '',
     note: initialUserFields?.note ?? '',
@@ -221,6 +233,45 @@ export function BusinessCardForm({
 
         <Field label={t('position')} showAi={showAi('position')}>
           <ControlledInput control={control} name="position" className={lowClass('position')} />
+        </Field>
+      </Section>
+
+      <Section title="연락처">
+        <Field label={t('phoneCompany')} showAi={showAi('phoneCompany')}>
+          <ControlledInput
+            control={control}
+            name="phoneCompany"
+            type="tel"
+            placeholder="02-1234-5678"
+            className={`tabular ${lowClass('phoneCompany')}`}
+          />
+        </Field>
+        <Field label={t('phoneMobile')} showAi={showAi('phoneMobile')}>
+          <ControlledInput
+            control={control}
+            name="phoneMobile"
+            type="tel"
+            placeholder="010-1234-5678"
+            className={`tabular ${lowClass('phoneMobile')}`}
+          />
+        </Field>
+        <Field label={t('email')} showAi={showAi('email')}>
+          <ControlledInput
+            control={control}
+            name="email"
+            type="email"
+            placeholder="name@company.com"
+            className={lowClass('email')}
+          />
+        </Field>
+        <Field label={t('fax')} showAi={showAi('fax')}>
+          <ControlledInput
+            control={control}
+            name="fax"
+            type="tel"
+            placeholder="02-1234-5679"
+            className={`tabular ${lowClass('fax')}`}
+          />
         </Field>
       </Section>
 

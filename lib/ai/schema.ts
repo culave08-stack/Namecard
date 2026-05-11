@@ -13,6 +13,10 @@ export const ScanResultSchema = z.object({
   position: z.string().nullable(),
   industry: z.string().nullable(),
   companyType: z.string().nullable().optional(),
+  phoneCompany: z.string().nullable().optional(),
+  phoneMobile: z.string().nullable().optional(),
+  email: z.string().nullable().optional(),
+  fax: z.string().nullable().optional(),
   detectedLanguage: z.enum(['ko', 'en', 'vi', 'ja']).nullable(),
   confidence: z.record(z.string(), z.enum(['low', 'mid', 'high'])).optional(),
 });

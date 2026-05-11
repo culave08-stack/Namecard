@@ -34,6 +34,10 @@ interface CardRow {
   position: string | null;
   industry: string | null;
   company_type: string | null;
+  phone_company: string | null;
+  phone_mobile: string | null;
+  email: string | null;
+  fax: string | null;
   interested_service: string;
   interested_service_other: string | null;
   note: string | null;
@@ -87,6 +91,10 @@ export class SupabaseCardRepository implements CardRepository {
       position: row.position ?? undefined,
       industry: row.industry ?? undefined,
       companyType: row.company_type ?? undefined,
+      phoneCompany: row.phone_company ?? undefined,
+      phoneMobile: row.phone_mobile ?? undefined,
+      email: row.email ?? undefined,
+      fax: row.fax ?? undefined,
       interestedService: row.interested_service as InterestedService,
       interestedServiceOther: row.interested_service_other ?? undefined,
       note: row.note ?? undefined,
@@ -131,6 +139,10 @@ export class SupabaseCardRepository implements CardRepository {
         position: card.position ?? null,
         industry: card.industry ?? null,
         company_type: card.companyType ?? null,
+        phone_company: card.phoneCompany ?? null,
+        phone_mobile: card.phoneMobile ?? null,
+        email: card.email ?? null,
+        fax: card.fax ?? null,
         interested_service: card.interestedService,
         interested_service_other: card.interestedServiceOther ?? null,
         note: card.note ?? null,
@@ -198,6 +210,10 @@ export class SupabaseCardRepository implements CardRepository {
     if (patch.position !== undefined) row.position = patch.position ?? null;
     if (patch.industry !== undefined) row.industry = patch.industry ?? null;
     if (patch.companyType !== undefined) row.company_type = patch.companyType ?? null;
+    if (patch.phoneCompany !== undefined) row.phone_company = patch.phoneCompany ?? null;
+    if (patch.phoneMobile !== undefined) row.phone_mobile = patch.phoneMobile ?? null;
+    if (patch.email !== undefined) row.email = patch.email ?? null;
+    if (patch.fax !== undefined) row.fax = patch.fax ?? null;
     if (patch.interestedService !== undefined) row.interested_service = patch.interestedService;
     if (patch.interestedServiceOther !== undefined)
       row.interested_service_other = patch.interestedServiceOther ?? null;

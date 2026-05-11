@@ -53,6 +53,10 @@ export default function CardDetailPage() {
         position: values.position || undefined,
         industry: values.industry || undefined,
         companyType: values.companyType || undefined,
+        phoneCompany: values.phoneCompany || undefined,
+        phoneMobile: values.phoneMobile || undefined,
+        email: values.email || undefined,
+        fax: values.fax || undefined,
         interestedService: values.interestedService,
         interestedServiceOther: values.interestedServiceOther || undefined,
         note: values.note || undefined,
@@ -147,6 +151,10 @@ export default function CardDetailPage() {
               position: card.position,
               industry: card.industry,
               companyType: card.companyType,
+              phoneCompany: card.phoneCompany,
+              phoneMobile: card.phoneMobile,
+              email: card.email,
+              fax: card.fax,
               detectedLanguage: card.detectedLanguage,
               aiFilledFields: [],
               aiConfidence: undefined,
@@ -195,6 +203,10 @@ export default function CardDetailPage() {
             />
             <DetailRow label={tForm('industry')} value={card.industry} />
             <DetailRow label={tForm('companyType')} value={card.companyType} />
+            <DetailRow label={tForm('phoneCompany')} value={card.phoneCompany} mono />
+            <DetailRow label={tForm('phoneMobile')} value={card.phoneMobile} mono />
+            <DetailRow label={tForm('email')} value={card.email} mono />
+            <DetailRow label={tForm('fax')} value={card.fax} mono />
             <DetailRow label={tForm('interestedService')} value={serviceLabel} />
             {card.note && <DetailRow label={tForm('note')} value={card.note} block />}
             <DetailRow label={t('createdAt')} value={dateStr} mono />

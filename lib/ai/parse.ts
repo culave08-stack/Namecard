@@ -46,6 +46,10 @@ export type FormDefaults = Pick<
   | 'position'
   | 'industry'
   | 'companyType'
+  | 'phoneCompany'
+  | 'phoneMobile'
+  | 'email'
+  | 'fax'
   | 'detectedLanguage'
   | 'aiFilledFields'
   | 'aiConfidence'
@@ -310,6 +314,10 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
   const position = cleanString(parsed.position);
   const industry = normalizeIndustry(parsed.industry);
   const companyType = normalizeCompanyType(parsed.companyType);
+  const phoneCompany = cleanString(parsed.phoneCompany);
+  const phoneMobile = cleanString(parsed.phoneMobile);
+  const email = cleanString(parsed.email);
+  const fax = cleanString(parsed.fax);
 
   const aiFilledFields: string[] = [];
   if (companyName) aiFilledFields.push('companyName');
@@ -320,6 +328,10 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
   if (position) aiFilledFields.push('position');
   if (industry) aiFilledFields.push('industry');
   if (companyType) aiFilledFields.push('companyType');
+  if (phoneCompany) aiFilledFields.push('phoneCompany');
+  if (phoneMobile) aiFilledFields.push('phoneMobile');
+  if (email) aiFilledFields.push('email');
+  if (fax) aiFilledFields.push('fax');
 
   return {
     companyName: companyName ?? '',
@@ -331,6 +343,10 @@ export function scanResultToFormDefaults(parsed: ScanResultParsed): FormDefaults
     position,
     industry,
     companyType,
+    phoneCompany,
+    phoneMobile,
+    email,
+    fax,
     detectedLanguage: parsed.detectedLanguage ?? undefined,
     aiFilledFields,
     aiConfidence: parsed.confidence as BusinessCard['aiConfidence'],

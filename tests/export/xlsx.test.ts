@@ -34,6 +34,10 @@ function makeCard(overrides: Partial<BusinessCard> = {}): BusinessCard {
     position: 'Exhibition Design Manager',
     industry: '디자인·광고',
     companyType: '대기업',
+    phoneCompany: '02-1234-5678',
+    phoneMobile: '010-9876-5432',
+    email: 'kevin@youngasia.com',
+    fax: '02-1234-5679',
     interestedService: 'kinderboard',
     aiFilledFields: [],
     ...overrides,
@@ -51,6 +55,10 @@ describe('cardsToRows', () => {
     expect(row.홈페이지).toBe('blog.naver.com/youngasia');
     expect(row.업종).toBe('디자인·광고');
     expect(row['회사 유형']).toBe('대기업');
+    expect(row['회사 전화']).toBe('02-1234-5678');
+    expect(row.휴대전화).toBe('010-9876-5432');
+    expect(row.이메일).toBe('kevin@youngasia.com');
+    expect(row.팩스).toBe('02-1234-5679');
     expect(row.관심서비스).toBe('킨더보드');
   });
 

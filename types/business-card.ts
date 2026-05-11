@@ -81,6 +81,10 @@ export interface BusinessCardFields {
   position?: string;
   industry?: string;
   companyType?: string;
+  phoneCompany?: string;
+  phoneMobile?: string;
+  email?: string;
+  fax?: string;
   interestedService: InterestedService;
   interestedServiceOther?: string;
   note?: string;
@@ -108,6 +112,10 @@ export type ScanResult = {
   position: string | null;
   industry: string | null;
   companyType: string | null;
+  phoneCompany: string | null;
+  phoneMobile: string | null;
+  email: string | null;
+  fax: string | null;
   detectedLanguage: DetectedLanguage | null;
   confidence?: Partial<Record<string, Confidence>>;
 };

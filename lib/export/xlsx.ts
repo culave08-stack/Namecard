@@ -12,6 +12,10 @@ interface Row {
   '담당자(영문)': string;
   직책: string;
   국가: string;
+  '회사 전화': string;
+  휴대전화: string;
+  이메일: string;
+  팩스: string;
   홈페이지: string;
   업종: string;
   '회사 유형': string;
@@ -27,6 +31,10 @@ const HEADERS: ReadonlyArray<keyof Row> = [
   '담당자(영문)',
   '직책',
   '국가',
+  '회사 전화',
+  '휴대전화',
+  '이메일',
+  '팩스',
   '홈페이지',
   '업종',
   '회사 유형',
@@ -55,6 +63,10 @@ export function cardsToRows(cards: BusinessCard[], labels: XlsxColumns): Row[] {
     '담당자(영문)': c.personNameEn ?? '',
     직책: c.position ?? '',
     국가: countryLabel(c.country),
+    '회사 전화': c.phoneCompany ?? '',
+    휴대전화: c.phoneMobile ?? '',
+    이메일: c.email ?? '',
+    팩스: c.fax ?? '',
     홈페이지: c.website ?? '',
     업종: c.industry ?? '',
     '회사 유형': c.companyType ?? '',

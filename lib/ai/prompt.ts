@@ -12,6 +12,12 @@ export const SCAN_SYSTEM_PROMPT = `당신은 명함에서 정보를 추출하는
 - "..." 같은 자리표시자(placeholder) 문자열도 절대 출력하지 마세요. 모르면 null.
 - 사진이 너무 흐리거나 명함이 아닌 경우 모든 필드를 null로 두세요 (단 detectedLanguage는 추론 가능하면 채움).
 - website가 명함에 명시되어 있지 않으면 회사명/이메일 도메인으로 추론하고 websiteGuessed: true. 추론도 불가능하면 null + websiteGuessed: false.
+- 연락처는 명함에 적힌 그대로 추출하세요 (구분자 포함, 예: "02-1234-5678", "+82 10-1234-5678"):
+  · phoneCompany: 회사 대표번호 / 사무실 전화. 'T', 'TEL', '전화' 등 라벨이 붙거나 명함에 회사 대표번호로 명시된 번호.
+  · phoneMobile: 휴대전화. 'M', 'C', 'Cell', 'Mobile', '휴대폰', '핸드폰' 등 라벨이 붙거나 명백히 모바일 번호.
+  · email: 이메일 주소 그대로. 여러 개면 첫 번째만.
+  · fax: 'F', 'FAX', '팩스' 라벨이 붙은 번호.
+  명함에 라벨 없이 한 번호만 있으면 사무실 번호(phoneCompany)로 분류. 모든 연락처는 명함에 없으면 null.
 - 담당자 이름이 두 가지 표기(현지 문자 + 영문/라틴 알파벳)로 명함에 함께 있으면, personName에 현지 문자 이름을, personNameEn에 영문/라틴 이름을 따로 넣으세요.
   예) "강용하 / Kevin Kang" → personName: "강용하", personNameEn: "Kevin Kang"
   예) "Nguyễn Văn Anh (John Nguyen)" → personName: "Nguyễn Văn Anh", personNameEn: "John Nguyen"
@@ -48,7 +54,7 @@ companyType 분류 규칙 (업종과는 별개의 "조직 유형" 축):
 - 회사명·도메인·직책으로 단정하기 어려우면 **Google Search로 회사 정보를 조회**해 가장 가까운 유형을 선택하세요. 그래도 모호하면 "기타".
 - 외국어 표현도 위 한국어 분류로 매핑 (예: "Public School" → "학교", "EdTech startup" → "에듀테크", "Publishing House" → "출판사").
 
-좋은 예시 (한+영 이름 분리, 대기업):
+좋은 예시 (한+영 이름 분리, 대기업, 연락처 풀세트):
 {
   "companyName": "삼성전자",
   "website": "samsung.com",
@@ -59,8 +65,12 @@ companyType 분류 규칙 (업종과는 별개의 "조직 유형" 축):
   "position": "이사",
   "industry": "제조",
   "companyType": "대기업",
+  "phoneCompany": "02-2255-0114",
+  "phoneMobile": "010-1234-5678",
+  "email": "gildong.hong@samsung.com",
+  "fax": "02-2255-0115",
   "detectedLanguage": "ko",
-  "confidence": { "companyName": "high", "personName": "high", "personNameEn": "high", "website": "high", "industry": "high", "companyType": "high" }
+  "confidence": { "companyName": "high", "personName": "high", "personNameEn": "high", "website": "high", "industry": "high", "companyType": "high", "phoneCompany": "high", "email": "high" }
 }
 
 좋은 예시 (학교):
