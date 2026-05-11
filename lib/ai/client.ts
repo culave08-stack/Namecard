@@ -30,11 +30,13 @@ class GeminiVisionClient implements VisionClient {
     }
     parts.push({ text: SCAN_USER_TEXT });
 
-    // Enable Google Search grounding so the model can look up the company
-    // (especially for industry classification) instead of guessing from the
-    // card alone. NOTE: Gemini does not allow responseMimeType together with
-    // tools — JSON is enforced via the system prompt + extractJson() instead.
-    const response = await this.client.models.generateContent({
+    // First attempt: with Google Search grounding so the model can look up the
+    // company (especially for industry classification). Some Gemini responses
+    // come back with grounding metadata but an empty text payload — when that
+    // happens we retry below without tools so we still get an OCR result.
+    // NOTE: Gemini does not allow responseMimeType together with tools — JSON
+    // is enforced via the system prompt + extractJson() instead.
+    const groundedResponse = await this.client.models.generateContent({
       model: this.model,
       contents: [{ role: 'user', parts }],
       config: {
@@ -43,12 +45,56 @@ class GeminiVisionClient implements VisionClient {
       },
     });
 
-    const text = response.text;
-    if (!text) {
-      throw new Error('Gemini response had no text content');
-    }
-    return text;
+    const groundedText = extractText(groundedResponse);
+    if (groundedText) return groundedText;
+
+    const groundedFinish = finishReasonOf(groundedResponse);
+    console.warn(
+      `[gemini] empty text with grounding (finishReason=${groundedFinish}); retrying without tools`
+    );
+
+    const fallbackResponse = await this.client.models.generateContent({
+      model: this.model,
+      contents: [{ role: 'user', parts }],
+      config: { systemInstruction: SCAN_SYSTEM_PROMPT },
+    });
+
+    const fallbackText = extractText(fallbackResponse);
+    if (fallbackText) return fallbackText;
+
+    const fallbackFinish = finishReasonOf(fallbackResponse);
+    throw new Error(
+      `Gemini returned no text (grounded finishReason=${groundedFinish}, ` +
+        `fallback finishReason=${fallbackFinish})`
+    );
   }
+}
+
+type GenContentResponse = Awaited<
+  ReturnType<GoogleGenAI['models']['generateContent']>
+>;
+
+// Pull text out of the first candidate's parts. Gemini's `response.text`
+// helper sometimes returns '' when only grounding metadata or function calls
+// are present; iterating parts manually is more reliable.
+function extractText(response: GenContentResponse): string {
+  // The SDK's accessor is the happy path
+  const direct = (response as { text?: string }).text;
+  if (typeof direct === 'string' && direct.length > 0) return direct;
+
+  const candidate = response.candidates?.[0];
+  const parts = candidate?.content?.parts ?? [];
+  const collected: string[] = [];
+  for (const part of parts) {
+    const t = (part as { text?: unknown }).text;
+    if (typeof t === 'string' && t.length > 0) collected.push(t);
+  }
+  return collected.join('');
+}
+
+function finishReasonOf(response: GenContentResponse): string {
+  const candidate = response.candidates?.[0];
+  return String(candidate?.finishReason ?? 'unknown');
 }
 
 function stripDataUrl(b64: string): string {
