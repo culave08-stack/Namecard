@@ -32,7 +32,9 @@ describe('parseScanResponse', () => {
     expect(result.personName).toBe('Y');
   });
 
-  it('throws on invalid country code', () => {
+  it('accepts non-alpha-2 country codes (normalization happens later)', () => {
+    // Real-world: AI sometimes returns 3-letter codes despite the prompt.
+    // The schema no longer throws so we don't drop the whole response.
     const raw = JSON.stringify({
       companyName: 'X',
       website: null,
@@ -43,7 +45,8 @@ describe('parseScanResponse', () => {
       industry: null,
       detectedLanguage: 'ko',
     });
-    expect(() => parseScanResponse(raw)).toThrow();
+    const result = parseScanResponse(raw);
+    expect(result.country?.code).toBe('KOR');
   });
 
   it('throws on completely invalid JSON', () => {
@@ -87,6 +90,37 @@ describe('scanResultToFormDefaults', () => {
     expect(defaults.website).toBe('acme.com');
     expect(defaults.websiteGuessed).toBe(true);
     expect(defaults.aiFilledFields).toContain('website');
+  });
+
+  it('normalizes 3-letter country codes to ISO alpha-2', () => {
+    const parsed = {
+      companyName: 'X',
+      website: null,
+      websiteGuessed: false,
+      country: { name: '한국', code: 'KOR' },
+      personName: 'Y',
+      position: null,
+      industry: null,
+      detectedLanguage: 'ko' as const,
+    };
+    const defaults = scanResultToFormDefaults(parsed);
+    expect(defaults.country?.code).toBe('KR');
+  });
+
+  it('keeps country name but blanks unknown code (no alpha-3 mapping)', () => {
+    const parsed = {
+      companyName: 'X',
+      website: null,
+      websiteGuessed: false,
+      country: { name: '베트남', code: 'XYZ' },
+      personName: 'Y',
+      position: null,
+      industry: null,
+      detectedLanguage: 'vi' as const,
+    };
+    const defaults = scanResultToFormDefaults(parsed);
+    expect(defaults.country?.name).toBe('베트남');
+    expect(defaults.country?.code).toBe('');
   });
 
   it('normalizes industry to a canonical taxonomy value', () => {

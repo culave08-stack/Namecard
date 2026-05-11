@@ -5,8 +5,10 @@ export const ScanResultSchema = z.object({
   companyName: z.string().nullable(),
   website: z.string().nullable(),
   websiteGuessed: z.boolean().default(false),
+  // code is validated/normalized later in parse.ts to avoid the whole
+  // response being thrown out when the AI emits a 3-letter code like "VIE".
   country: z
-    .object({ name: z.string(), code: z.string().length(2) })
+    .object({ name: z.string(), code: z.string() })
     .nullable(),
   personName: z.string().nullable(),
   personNameEn: z.string().nullable().optional(),

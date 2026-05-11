@@ -198,7 +198,11 @@ export default function CardDetailPage() {
             <DetailRow
               label={tForm('country')}
               value={
-                card.country ? `${card.country.name} (${card.country.code})` : undefined
+                card.country
+                  ? card.country.code
+                    ? `${card.country.name} (${card.country.code})`
+                    : card.country.name
+                  : undefined
               }
             />
             <DetailRow label={tForm('industry')} value={card.industry} />

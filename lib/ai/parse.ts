@@ -67,12 +67,50 @@ function cleanString(v: unknown): string | undefined {
   return trimmed;
 }
 
+// Common 3-letter (alpha-3) → 2-letter (alpha-2) mappings for codes the
+// model sometimes emits despite the prompt asking for alpha-2.
+const ALPHA3_TO_ALPHA2: Record<string, string> = {
+  KOR: 'KR',
+  VNM: 'VN',
+  VIE: 'VN',
+  JPN: 'JP',
+  CHN: 'CN',
+  USA: 'US',
+  GBR: 'GB',
+  DEU: 'DE',
+  FRA: 'FR',
+  ITA: 'IT',
+  ESP: 'ES',
+  CAN: 'CA',
+  AUS: 'AU',
+  IND: 'IN',
+  IDN: 'ID',
+  THA: 'TH',
+  TWN: 'TW',
+  HKG: 'HK',
+  SGP: 'SG',
+  MYS: 'MY',
+  PHL: 'PH',
+  RUS: 'RU',
+  MEX: 'MX',
+  BRA: 'BR',
+  ZAF: 'ZA',
+};
+
 function cleanCountry(c: ScanResultParsed['country']) {
   if (!c) return undefined;
   const name = cleanString(c.name);
-  const code = cleanString(c.code);
-  if (!name || !code) return undefined;
-  return { name, code: code.toUpperCase() };
+  if (!name) return undefined;
+  const codeRaw = cleanString(c.code);
+  if (!codeRaw) return { name, code: '' };
+  const upper = codeRaw.toUpperCase();
+  if (upper.length === 2) return { name, code: upper };
+  // 3-letter alpha-3 → alpha-2 lookup
+  if (upper.length === 3 && ALPHA3_TO_ALPHA2[upper]) {
+    return { name, code: ALPHA3_TO_ALPHA2[upper] };
+  }
+  // Unknown / non-standard — keep country name, drop code
+  return { name, code: '' };
 }
 
 // Aliases that the AI might emit instead of the canonical Korean labels.

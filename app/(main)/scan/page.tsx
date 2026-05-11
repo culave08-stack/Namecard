@@ -92,7 +92,10 @@ export default function ScanPage() {
 
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
-        toast.error(t('aiFailed'));
+        const detail = typeof errBody?.error === 'string' ? errBody.error : '';
+        toast.error(detail ? `${t('aiFailed')} (${detail})` : t('aiFailed'), {
+          duration: 8_000,
+        });
         console.error('scan failed', errBody);
         dispatch({ type: 'manual-fallback' });
         return;

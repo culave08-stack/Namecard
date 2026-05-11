@@ -48,6 +48,10 @@ export const metadata: Metadata = {
     icon: '/icon.svg',
     apple: '/icon.svg',
   },
+  other: {
+    // Modern alias for apple-mobile-web-app-capable (Chrome deprecation warning)
+    'mobile-web-app-capable': 'yes',
+  },
 };
 
 export const viewport: Viewport = {
