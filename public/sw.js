@@ -4,13 +4,17 @@
 //   - Next static assets (/_next/static/**)       : cache-first (immutable)
 //   - Supabase Storage (card images)              : cache-first, keyed by path
 //                                                   only (drops signed-URL token)
-//   - Supabase REST GET (cards data)              : stale-while-revalidate
+//   - Supabase REST GET (cards data)              : network-first w/ cache
+//                                                   fallback. CRUD-heavy data
+//                                                   must show fresh state right
+//                                                   after save/update/delete;
+//                                                   cache only covers offline.
 //   - HTML navigations                            : network-first, cache fallback
 //   - Everything else                             : network-only
 //
 // Writes (POST/PATCH/DELETE) and /api/scan always go to the network.
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const PRECACHE = `precache-${VERSION}`;
 const STATIC = `static-${VERSION}`;
 const STORAGE = `storage-${VERSION}`;
@@ -124,7 +128,7 @@ self.addEventListener('fetch', (event) => {
 
   // Card data from Supabase REST (GET only — POST/PATCH/DELETE already excluded above)
   if (isSupabaseRest(url)) {
-    event.respondWith(staleWhileRevalidate(req, RUNTIME));
+    event.respondWith(networkFirst(req, RUNTIME));
     return;
   }
 
